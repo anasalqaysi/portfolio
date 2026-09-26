@@ -132,18 +132,7 @@
                                 <span class="window-title">Website.tsx</span>
                             </div>
                             <div class="window-body">
-                                <pre><code><span class="code-keyword">interface</span> <span class="code-def">ProjectProps</span> {
-  <span class="code-prop">client</span>: <span class="code-type">string</span>;
-  <span class="code-prop">type</span>: <span class="code-string">'Web App'</span> | <span class="code-string">'E-commerce'</span>;
-}
-
-<span class="code-keyword">export function</span> <span class="code-def">CreateWebsite</span>({ <span class="code-prop">client</span>, <span class="code-prop">type</span> }: <span class="code-type">ProjectProps</span>) {
-  <span class="code-keyword">return</span> (
-    &lt;<span class="code-def">Project</span> <span class="code-prop">performance</span>=<span class="code-string">"100%"</span> <span class="code-prop">readyToLaunch</span>={<span class="code-keyword">true</span>}&gt;
-      &lt;<span class="code-def">DeliverSuccess</span> <span class="code-prop">to</span>={client} /&gt;
-    &lt;/<span class="code-def">Project</span>&gt;
-  );
-}</code></pre>
+                                <pre><code id="codeTyping"></code></pre>
                             </div>
                         </div>
                     </div>
@@ -538,6 +527,91 @@
                 card.style.setProperty('--mouse-y', `${y}px`);
             });
         });
+
+        // =============================================
+        // Typewriter Animation for Code Showcase Window
+        // =============================================
+        const codeTokens = [
+            { text: 'interface', class: 'code-keyword' },
+            { text: ' ' },
+            { text: 'ProjectProps', class: 'code-def' },
+            { text: ' {\n  ' },
+            { text: 'client', class: 'code-prop' },
+            { text: ': ' },
+            { text: 'string', class: 'code-type' },
+            { text: ';\n  ' },
+            { text: 'type', class: 'code-prop' },
+            { text: ': ' },
+            { text: "'Web App'", class: 'code-string' },
+            { text: ' | ' },
+            { text: "'E-commerce'", class: 'code-string' },
+            { text: ';\n}\n\n' },
+            { text: 'export function', class: 'code-keyword' },
+            { text: ' ' },
+            { text: 'CreateWebsite', class: 'code-def' },
+            { text: '({ ' },
+            { text: 'client', class: 'code-prop' },
+            { text: ', ' },
+            { text: 'type', class: 'code-prop' },
+            { text: ' }: ' },
+            { text: 'ProjectProps', class: 'code-type' },
+            { text: ') {\n  ' },
+            { text: 'return', class: 'code-keyword' },
+            { text: ' (\n    <' },
+            { text: 'Project', class: 'code-def' },
+            { text: ' ' },
+            { text: 'performance', class: 'code-prop' },
+            { text: '=' },
+            { text: '"100%"', class: 'code-string' },
+            { text: ' ' },
+            { text: 'readyToLaunch', class: 'code-prop' },
+            { text: '={' },
+            { text: 'true', class: 'code-keyword' },
+            { text: '}>\n      <' },
+            { text: 'DeliverSuccess', class: 'code-def' },
+            { text: ' ' },
+            { text: 'to', class: 'code-prop' },
+            { text: '={' },
+            { text: 'client', class: 'code-prop' },
+            { text: '} />\n    </' },
+            { text: 'Project', class: 'code-def' },
+            { text: '>\n  );\n}' }
+        ];
+
+        async function initCodeTyping() {
+            const container = document.getElementById('codeTyping');
+            if (!container) return;
+
+            container.innerHTML = '';
+            const cursor = document.createElement('span');
+            cursor.className = 'code-cursor';
+            container.appendChild(cursor);
+
+            const speed = 22; // ms delay per character
+
+            for (const token of codeTokens) {
+                let elem;
+                if (token.class) {
+                    elem = document.createElement('span');
+                    elem.className = token.class;
+                } else {
+                    elem = document.createTextNode('');
+                }
+                container.insertBefore(elem, cursor);
+
+                for (let i = 0; i < token.text.length; i++) {
+                    const char = token.text[i];
+                    if (elem.nodeType === 3) {
+                        elem.nodeValue += char;
+                    } else {
+                        elem.textContent += char;
+                    }
+                    await new Promise(resolve => setTimeout(resolve, speed));
+                }
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', initCodeTyping);
     </script>
 </body>
 

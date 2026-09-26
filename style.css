@@ -615,6 +615,22 @@ img {
     color: #fbbf24;
 }
 
+.code-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 1.15em;
+    background-color: #38bdf8;
+    margin-left: 2px;
+    vertical-align: sub;
+    border-radius: 1px;
+    animation: blinkCursor 0.8s infinite;
+}
+
+@keyframes blinkCursor {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
 .window-footer {
     display: flex;
     align-items: center;
