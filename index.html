@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Anas Developer - مطور ومخطط حلول رقمية | تصميم وتطوير أنظمة ويب احترافية">
+    <title>Anas Developer | حلول وأنظمة رقمية</title>
+    <!-- Favicon / Website Logo -->
+    <link rel="icon" type="image/svg+xml" href="logo2.svg">
+    <link rel="alternate icon" href="logo2.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="logo2.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap"
+        rel="stylesheet">
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+
+
+    <!-- Navbar -->
+    <header class="navbar" id="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="#" class="logo">
+                    <img src="logo2.svg" alt="Anas Developer" class="logo-img">
+                    <span>Anas Developer</span>
+                </a>
+                <nav class="nav-desktop">
+                    <ul class="nav-links">
+                        <li><a href="#expertise">الخبرات</a></li>
+                        <li><a href="#work">الأعمال</a></li>
+                        <li><a href="#contact">تواصل معي</a></li>
+                    </ul>
+                </nav>
+                <a href="#contact" class="btn btn-nav">ابدأ مشروعك</a>
+
+                <!-- Mobile Menu Toggle -->
+                <button class="menu-toggle" id="menuToggle" aria-label="القائمة">
+                    <span class="hamburger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-content">
+            <nav>
+                <ul class="mobile-nav-links">
+                    <li><a href="#expertise" class="mobile-link">الخبرات</a></li>
+                    <li><a href="#work" class="mobile-link">الأعمال</a></li>
+                    <li><a href="#contact" class="mobile-link">تواصل معي</a></li>
+                </ul>
+            </nav>
+            <a href="#contact" class="btn btn-primary btn-mobile-cta">ابدأ مشروعك الآن</a>
+        </div>
+    </div>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-grid">
+                    <!-- Right Column: Content -->
+                    <div class="hero-content">
+
+                        <h1 class="hero-title animate-fade-up delay-1">
+                            تحويل الأفكار إلى
+                            <span class="gradient-text">أنظمة ومنتجات رقمية</span>
+                            متكاملة.
+                        </h1>
+                        <p class="hero-desc animate-fade-up delay-2">
+                            أركز على هندسة النظم السحابية، أتمتة العمليات بالذكاء الاصطناعي، وتسليم تطبيقات ويب عالية
+                            الاستقرار وقابلة للتوسع لتلبية متطلبات الأعمال الفعلية.
+                        </p>
+                        <div class="hero-actions animate-fade-up delay-3">
+                            <a href="#contact" class="btn btn-primary btn-glow">
+                                <span>ابدأ مشروعك معي</span>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                                    <polyline points="12 19 5 12 12 5"></polyline>
+                                </svg>
+                            </a>
+                            <a href="#work" class="btn btn-glass">
+                                <span>استعرض الأعمال</span>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </a>
+                        </div>
+
+                        <!-- Stats Row -->
+                        <div class="hero-stats animate-fade-up delay-4">
+                            <div class="stat-item">
+                                <span class="stat-number">+10</span>
+                                <span class="stat-label">مشاريع مُنجزة</span>
+                            </div>
+                            <div class="stat-divider"></div>
+                            <div class="stat-item">
+                                <span class="stat-number">+3</span>
+                                <span class="stat-label">سنوات خبرة</span>
+                            </div>
+                            <div class="stat-divider"></div>
+                            <div class="stat-item">
+                                <span class="stat-number">100%</span>
+                                <span class="stat-label">رضا العملاء</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Left Column: Technical Showcase Window -->
+                    <div class="hero-visual animate-fade-up delay-2">
+                        <div class="code-window">
+                            <div class="window-header">
+                                <div class="window-dots">
+                                    <span class="dot dot-red"></span>
+                                    <span class="dot dot-yellow"></span>
+                                    <span class="dot dot-green"></span>
+                                </div>
+                                <span class="window-title">Website.tsx</span>
+                            </div>
+                            <div class="window-body">
+                                <pre><code><span class="code-keyword">interface</span> <span class="code-def">ProjectProps</span> {
+  <span class="code-prop">client</span>: <span class="code-type">string</span>;
+  <span class="code-prop">type</span>: <span class="code-string">'Web App'</span> | <span class="code-string">'E-commerce'</span>;
+}
+
+<span class="code-keyword">export function</span> <span class="code-def">CreateWebsite</span>({ <span class="code-prop">client</span>, <span class="code-prop">type</span> }: <span class="code-type">ProjectProps</span>) {
+  <span class="code-keyword">return</span> (
+    &lt;<span class="code-def">Project</span> <span class="code-prop">performance</span>=<span class="code-string">"100%"</span> <span class="code-prop">readyToLaunch</span>={<span class="code-keyword">true</span>}&gt;
+      &lt;<span class="code-def">DeliverSuccess</span> <span class="code-prop">to</span>={client} /&gt;
+    &lt;/<span class="code-def">Project</span>&gt;
+  );
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Expertise Section -->
+        <section id="expertise" class="section">
+            <div class="container">
+                <div class="section-header">
+
+                    <h2 class="section-title">مجالات التخصص</h2>
+                    <p class="section-subtitle">أقدم حلولاً تقنية شاملة تغطي جميع مراحل بناء المنتجات الرقمية</p>
+                </div>
+                <div class="expertise-grid">
+                    <div class="expertise-card">
+                        <div class="card-icon card-icon-blue">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                <line x1="8" y1="21" x2="16" y2="21"></line>
+                                <line x1="12" y1="17" x2="12" y2="21"></line>
+                            </svg>
+                        </div>
+                        <h3>تخطيط وهندسة النظم</h3>
+                        <p>بناء معماريات برمجية متينة تضمن سرعة المعالجة وقابلية التوسع دون مشاكل مستقبلية.</p>
+                        <div class="card-shine"></div>
+                    </div>
+                    <div class="expertise-card">
+                        <div class="card-icon card-icon-purple">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2a4 4 0 0 1 4 4c0 1.95-1.4 3.58-3.25 3.93L12 22"></path>
+                                <path d="M12 2a4 4 0 0 0-4 4c0 1.95 1.4 3.58 3.25 3.93"></path>
+                                <path d="M4 13h16"></path>
+                                <path d="M4 17h16"></path>
+                            </svg>
+                        </div>
+                        <h3>التطوير بالذكاء الاصطناعي</h3>
+                        <p>تسخير النماذج الذكية لأتمتة المهام المعقدة وتسريع دورة بناء وتطوير المنتجات.</p>
+                        <div class="card-shine"></div>
+                    </div>
+                    <div class="expertise-card">
+                        <div class="card-icon card-icon-teal">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                            </svg>
+                        </div>
+                        <h3>قواعد البيانات السحابية</h3>
+                        <p>هندسة بنية بيانات آمنة ومرنة مع ضبط دقيق للأداء والحماية ومصادقة المستخدمين.</p>
+                        <div class="card-shine"></div>
+                    </div>
+                    <div class="expertise-card">
+                        <div class="card-icon card-icon-amber">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                            </svg>
+                        </div>
+                        <h3>إطلاق النماذج الأولية (MVPs)</h3>
+                        <p>تحويل المتطلبات إلى منتج حي يعمل بكفاءة وجاهز للإطلاق والاختبار بأقصر وقت ممكن.</p>
+                        <div class="card-shine"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Work Section -->
+        <section id="work" class="section">
+            <div class="container">
+                <div class="section-header">
+
+                    <h2 class="section-title">نماذج من الأعمال</h2>
+                    <p class="section-subtitle">مشاريع حقيقية تم تطويرها وتسليمها بأعلى معايير الجودة</p>
+                </div>
+                <div class="projects-grid">
+                    <!-- Project 1: Sijilli -->
+                    <div class="project-card project-featured">
+                        <div class="project-image">
+                            <div class="swiper project-swiper" id="swiper-sijilli">
+                                <div class="swiper-wrapper">
+                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-main.png"
+                                            alt="منصة سجلي للخدمات الإلكترونية" loading="eager"></div>
+                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-1.png" alt="منصة سجلي"
+                                            loading="lazy"></div>
+                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-2.png" alt="منصة سجلي"
+                                            loading="lazy"></div>
+                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-3.png" alt="منصة سجلي"
+                                            loading="lazy"></div>
+                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-4.png" alt="منصة سجلي"
+                                            loading="lazy"></div>
+                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-5.png" alt="منصة سجلي"
+                                            loading="lazy"></div>
+                                </div>
+                                <div class="swiper-pagination"></div>
+                                <div class="swiper-button-prev"></div>
+                                <div class="swiper-button-next"></div>
+                            </div>
+                            <div class="project-badge">مشروع مميز</div>
+                        </div>
+                        <div class="project-content">
+                            <div>
+                                <h3 class="project-title">منصة سجلي للخدمات الإلكترونية</h3>
+                                <p class="project-desc">
+                                    منصة متكاملة لتقديم وتسهيل الخدمات الإلكترونية (مثل الضمان المطور)، مزودة بلوحة تحكم
+                                    إدارية شاملة لإدارة الطلبات، تخصيص الأسعار، ومتابعة حالة العملاء بشكل فوري.
+                                </p>
+                            </div>
+                            <div class="tech-stack">
+                                <span class="tech-pill">Next.js</span>
+                                <span class="tech-pill">React</span>
+                                <span class="tech-pill">TypeScript</span>
+                                <span class="tech-pill">Tailwind CSS</span>
+                                <span class="tech-pill">Firebase</span>
+                            </div>
+                            <div class="project-actions">
+                                <a href="https://www.sajalni.app" class="btn btn-primary btn-sm" target="_blank">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                        <polyline points="15 3 21 3 21 9"></polyline>
+                                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                                    </svg>
+                                    معاينة حية
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <div class="container">
+                <div class="section-header section-header-center">
+
+                    <h2 class="section-title">دعنا نتحدث حول مشروعك القادم</h2>
+                    <p class="section-subtitle">مهتم بمناقشة فكرة نظام جديد أو بناء نموذج أولي سريع؟ أنا هنا للمساعدة
+                    </p>
+                </div>
+                <div class="contact-grid">
+                    <form class="contact-form" id="contactForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">الاسم الكريم</label>
+                                <input type="text" id="name" required placeholder="محمد علي">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">البريد الإلكتروني</label>
+                                <input type="email" id="email" required placeholder="name@domain.com">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">الموضوع</label>
+                            <input type="text" id="subject" placeholder="مشروع جديد / استشارة تقنية">
+                        </div>
+                        <div class="form-group">
+                            <label for="msg">تفاصيل المشروع أو الاستفسار</label>
+                            <textarea id="msg" rows="5" required
+                                placeholder="أخبرني بنبذة عن الفكرة أو المشكلة التقنية..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-glow btn-submit">
+                            <span>إرسال الرسالة</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                        </button>
+                    </form>
+
+                    <div class="contact-sidebar">
+                        <div class="contact-info-card">
+                            <div class="info-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.5">
+                                    <path
+                                        d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                                    </path>
+                                    <polyline points="22,6 12,13 2,6"></polyline>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4>البريد الإلكتروني</h4>
+                                <a href="mailto:contact@anasalqaysi.tech" class="info-link">contact@anasalqaysi.tech</a>
+                            </div>
+                        </div>
+
+                        <div class="contact-info-card">
+                            <div class="info-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.5">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4>الموقع</h4>
+                                <p class="info-text">المملكة العربية السعودية</p>
+                            </div>
+                        </div>
+
+
+
+                        <div class="freelance-badge">
+                            <div class="freelance-icon">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4>موثق ومُصرح للعمل الحر</h4>
+                                <p>حاصل على "وثيقة العمل الحر" المعتمدة، مما يضمن لك موثوقية عالية وتعاقد رسمي.</p>
+                                <a href="#" class="verify-link">التحقق من الوثيقة ←</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <a href="#" class="logo">
+                        <img src="logo2.svg" alt="Anas Developer" class="logo-img">
+                        <span>Anas Developer</span>
+                    </a>
+                </div>
+                <p class="footer-text">&copy; 2026 Anas Developer. جميع الحقوق محفوظة.</p>
+                <div class="footer-links">
+                    <a href="#expertise">الخبرات</a>
+                    <a href="#work">الأعمال</a>
+                    <a href="#contact">تواصل</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script>
+        // =============================================
+        // Swiper Initialization
+        // =============================================
+        const swiper = new Swiper('.project-swiper', {
+            loop: true,
+            initialSlide: 0,
+            effect: 'fade',
+            fadeEffect: { crossFade: true },
+            autoplay: false, // متوقف تلقائياً لتظل صورة الواجهة الرئيسية ثابتة عند دخول الموقع
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+        });
+
+        // =============================================
+        // Mobile Menu
+        // =============================================
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+            document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menuToggle.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // =============================================
+        // Navbar Scroll Effect
+        // =============================================
+        const navbar = document.getElementById('navbar');
+        let lastScroll = 0;
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.scrollY;
+
+            if (currentScroll > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+
+            lastScroll = currentScroll;
+        });
+
+        // =============================================
+        // Scroll Reveal Animation
+        // =============================================
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.expertise-card, .project-card, .contact-form, .contact-sidebar, .section-header').forEach(el => {
+            el.classList.add('reveal');
+            observer.observe(el);
+        });
+
+        // =============================================
+        // Form Submit Handler (Real Email Service)
+        // =============================================
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('.btn-submit');
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const subject = document.getElementById('subject').value || 'رسالة جديدة من الموقع الشخصي';
+            const message = document.getElementById('msg').value;
+
+            btn.disabled = true;
+            btn.innerHTML = '<span>جاري الإرسال...</span>';
+
+            try {
+                const response = await fetch('https://formsubmit.co/ajax/contact@anasalqaysi.tech', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        _subject: `رسالة موقع Anas Developer: ${subject}`,
+                        الاسم: name,
+                        البريد: email,
+                        الموضوع: subject,
+                        الرسالة: message
+                    })
+                });
+
+                if (response.ok) {
+                    btn.innerHTML = '<span>✓ تم الإرسال بنجاح</span>';
+                    btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                    e.target.reset();
+                } else {
+                    throw new Error('فشل الإرسال عبر الخدمة السحابية');
+                }
+            } catch (err) {
+                // Fallback to direct mailto if fetch encounters issue
+                window.location.href = `mailto:contact@anasalqaysi.tech?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent("الاسم: " + name + "\nالبريد: " + email + "\n\n" + message)}`;
+                btn.innerHTML = '<span>✓ فتح تطبيق البريد الإلكتروني</span>';
+            } finally {
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>إرسال الرسالة</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>';
+                    btn.style.background = '';
+                }, 4500);
+            }
+        });
+
+        // =============================================
+        // Smooth mouse-follow glow on expertise cards
+        // =============================================
+        document.querySelectorAll('.expertise-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+</body>
+
+</html>
