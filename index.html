@@ -293,13 +293,19 @@
                                 <input type="text" id="name" required placeholder="محمد علي">
                             </div>
                             <div class="form-group">
+                                <label for="phone">رقم الجوال / الواتساب</label>
+                                <input type="tel" id="phone" required placeholder="05x xxx xxxx">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
                                 <label for="email">البريد الإلكتروني</label>
                                 <input type="email" id="email" required placeholder="name@domain.com">
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="subject">الموضوع</label>
-                            <input type="text" id="subject" placeholder="مشروع جديد / استشارة تقنية">
+                            <div class="form-group">
+                                <label for="subject">الموضوع</label>
+                                <input type="text" id="subject" placeholder="مشروع جديد / استشارة تقنية">
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="msg">تفاصيل المشروع أو الاستفسار</label>
@@ -479,6 +485,7 @@
             e.preventDefault();
             const btn = e.target.querySelector('.btn-submit');
             const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
             const email = document.getElementById('email').value;
             const subject = document.getElementById('subject').value || 'رسالة جديدة من الموقع الشخصي';
             const message = document.getElementById('msg').value;
@@ -496,6 +503,7 @@
                     body: JSON.stringify({
                         _subject: `رسالة موقع أنس القيسي: ${subject}`,
                         الاسم: name,
+                        الجوال: phone,
                         البريد: email,
                         الموضوع: subject,
                         الرسالة: message
@@ -511,7 +519,7 @@
                 }
             } catch (err) {
                 // Fallback to direct mailto if fetch encounters issue
-                window.location.href = `mailto:contact@anasalqaysi.tech?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent("الاسم: " + name + "\nالبريد: " + email + "\n\n" + message)}`;
+                window.location.href = `mailto:contact@anasalqaysi.tech?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent("الاسم: " + name + "\nالجوال: " + phone + "\nالبريد: " + email + "\n\n" + message)}`;
                 btn.innerHTML = '<span>✓ فتح تطبيق البريد الإلكتروني</span>';
             } finally {
                 setTimeout(() => {
