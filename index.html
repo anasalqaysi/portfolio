@@ -4,8 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="أنس القيسي - مطور ومخطط حلول رقمية | تصميم وتطوير أنظمة ويب احترافية">
-    <title>أنس القيسي | حلول وأنظمة رقمية</title>
+    <meta name="description" content="Anas Developer - مطور ومخطط حلول رقمية | تصميم وتطوير أنظمة ويب احترافية">
+    <title>Anas Developer | حلول وأنظمة رقمية</title>
+    <!-- Favicon / Website Logo -->
+    <link rel="icon" type="image/svg+xml" href="logo2.svg">
+    <link rel="alternate icon" href="logo2.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="logo2.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap"
@@ -24,8 +28,8 @@
         <div class="container">
             <div class="nav-content">
                 <a href="#" class="logo">
-                    <img src="logo2.svg" alt="أنس القيسي" class="logo-img">
-                    <span>أنس القيسي</span>
+                    <img src="logo2.svg" alt="Anas Developer" class="logo-img">
+                    <span>Anas Developer</span>
                 </a>
                 <nav class="nav-desktop">
                     <ul class="nav-links">
@@ -128,18 +132,7 @@
                                 <span class="window-title">Website.tsx</span>
                             </div>
                             <div class="window-body">
-                                <pre><code><span class="code-keyword">interface</span> <span class="code-def">ProjectProps</span> {
-  <span class="code-prop">client</span>: <span class="code-type">string</span>;
-  <span class="code-prop">type</span>: <span class="code-string">'Web App'</span> | <span class="code-string">'E-commerce'</span>;
-}
-
-<span class="code-keyword">export function</span> <span class="code-def">CreateWebsite</span>({ <span class="code-prop">client</span>, <span class="code-prop">type</span> }: <span class="code-type">ProjectProps</span>) {
-  <span class="code-keyword">return</span> (
-    &lt;<span class="code-def">Project</span> <span class="code-prop">performance</span>=<span class="code-string">"100%"</span> <span class="code-prop">readyToLaunch</span>={<span class="code-keyword">true</span>}&gt;
-      &lt;<span class="code-def">DeliverSuccess</span> <span class="code-prop">to</span>={client} /&gt;
-    &lt;/<span class="code-def">Project</span>&gt;
-  );
-}</code></pre>
+                                <pre><code id="codeTyping"></code></pre>
                             </div>
                         </div>
                     </div>
@@ -225,17 +218,17 @@
                         <div class="project-image">
                             <div class="swiper project-swiper" id="swiper-sijilli">
                                 <div class="swiper-wrapper">
-                                    <div class="swiper-slide"><img src="sijilli-main.png"
+                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-main.png"
                                             alt="منصة سجلي للخدمات الإلكترونية" loading="eager"></div>
-                                    <div class="swiper-slide"><img src="sijilli-img-1.png" alt="منصة سجلي"
+                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-1.png" alt="منصة سجلي"
                                             loading="lazy"></div>
-                                    <div class="swiper-slide"><img src="sijilli-img-2.png" alt="منصة سجلي"
+                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-2.png" alt="منصة سجلي"
                                             loading="lazy"></div>
-                                    <div class="swiper-slide"><img src="sijilli-img-3.png" alt="منصة سجلي"
+                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-3.png" alt="منصة سجلي"
                                             loading="lazy"></div>
-                                    <div class="swiper-slide"><img src="sijilli-img-4.png" alt="منصة سجلي"
+                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-4.png" alt="منصة سجلي"
                                             loading="lazy"></div>
-                                    <div class="swiper-slide"><img src="sijilli-img-5.png" alt="منصة سجلي"
+                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-5.png" alt="منصة سجلي"
                                             loading="lazy"></div>
                                 </div>
                                 <div class="swiper-pagination"></div>
@@ -380,11 +373,11 @@
             <div class="footer-content">
                 <div class="footer-logo">
                     <a href="#" class="logo">
-                        <img src="logo2.svg" alt="أنس القيسي" class="logo-img">
-                        <span>أنس القيسي</span>
+                        <img src="logo2.svg" alt="Anas Developer" class="logo-img">
+                        <span>Anas Developer</span>
                     </a>
                 </div>
-                <p class="footer-text">&copy; 2026 أنس القيسي. جميع الحقوق محفوظة.</p>
+                <p class="footer-text">&copy; 2026 Anas Developer. جميع الحقوق محفوظة.</p>
                 <div class="footer-links">
                     <a href="#expertise">الخبرات</a>
                     <a href="#work">الأعمال</a>
@@ -494,14 +487,14 @@
             btn.innerHTML = '<span>جاري الإرسال...</span>';
 
             try {
-                const response = await fetch('https://formsubmit.co/ajax/contact@anasalqaysi.tech', {
+                const response = await fetch('https://formsubmit.co/ajax/ca5739aa2f14d0de06a690aa6c86d82d', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json'
                     },
                     body: JSON.stringify({
-                        _subject: `رسالة موقع أنس القيسي: ${subject}`,
+                        _subject: `رسالة موقع Anas Developer: ${subject}`,
                         الاسم: name,
                         الجوال: phone,
                         البريد: email,
@@ -542,6 +535,91 @@
                 card.style.setProperty('--mouse-y', `${y}px`);
             });
         });
+
+        // =============================================
+        // Typewriter Animation for Code Showcase Window
+        // =============================================
+        const codeTokens = [
+            { text: 'interface', class: 'code-keyword' },
+            { text: ' ' },
+            { text: 'ProjectProps', class: 'code-def' },
+            { text: ' {\n  ' },
+            { text: 'client', class: 'code-prop' },
+            { text: ': ' },
+            { text: 'string', class: 'code-type' },
+            { text: ';\n  ' },
+            { text: 'type', class: 'code-prop' },
+            { text: ': ' },
+            { text: "'Web App'", class: 'code-string' },
+            { text: ' | ' },
+            { text: "'E-commerce'", class: 'code-string' },
+            { text: ';\n}\n\n' },
+            { text: 'export function', class: 'code-keyword' },
+            { text: ' ' },
+            { text: 'CreateWebsite', class: 'code-def' },
+            { text: '({ ' },
+            { text: 'client', class: 'code-prop' },
+            { text: ', ' },
+            { text: 'type', class: 'code-prop' },
+            { text: ' }: ' },
+            { text: 'ProjectProps', class: 'code-type' },
+            { text: ') {\n  ' },
+            { text: 'return', class: 'code-keyword' },
+            { text: ' (\n    <' },
+            { text: 'Project', class: 'code-def' },
+            { text: ' ' },
+            { text: 'performance', class: 'code-prop' },
+            { text: '=' },
+            { text: '"100%"', class: 'code-string' },
+            { text: ' ' },
+            { text: 'readyToLaunch', class: 'code-prop' },
+            { text: '={' },
+            { text: 'true', class: 'code-keyword' },
+            { text: '}>\n      <' },
+            { text: 'DeliverSuccess', class: 'code-def' },
+            { text: ' ' },
+            { text: 'to', class: 'code-prop' },
+            { text: '={' },
+            { text: 'client', class: 'code-prop' },
+            { text: '} />\n    </' },
+            { text: 'Project', class: 'code-def' },
+            { text: '>\n  );\n}' }
+        ];
+
+        async function initCodeTyping() {
+            const container = document.getElementById('codeTyping');
+            if (!container) return;
+
+            container.innerHTML = '';
+            const cursor = document.createElement('span');
+            cursor.className = 'code-cursor';
+            container.appendChild(cursor);
+
+            const speed = 22; // ms delay per character
+
+            for (const token of codeTokens) {
+                let elem;
+                if (token.class) {
+                    elem = document.createElement('span');
+                    elem.className = token.class;
+                } else {
+                    elem = document.createTextNode('');
+                }
+                container.insertBefore(elem, cursor);
+
+                for (let i = 0; i < token.text.length; i++) {
+                    const char = token.text[i];
+                    if (elem.nodeType === 3) {
+                        elem.nodeValue += char;
+                    } else {
+                        elem.textContent += char;
+                    }
+                    await new Promise(resolve => setTimeout(resolve, speed));
+                }
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', initCodeTyping);
     </script>
 </body>
 
