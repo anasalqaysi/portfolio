@@ -43,6 +43,7 @@ body {
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
+    transition: background-color 0.3s var(--ease), color 0.3s var(--ease);
 }
 
 a {
@@ -235,6 +236,50 @@ img {
 .btn-nav:hover {
     opacity: 0.85;
     transform: translateY(-1px);
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.theme-toggle {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-2);
+    transition: all 0.25s var(--ease);
+    outline: none;
+    flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+    color: var(--text);
+    border-color: var(--border-hover);
+    transform: translateY(-1px);
+}
+
+.theme-toggle .sun-icon {
+    display: block;
+}
+
+.theme-toggle .moon-icon {
+    display: none;
+}
+
+[data-theme="light"] .theme-toggle .sun-icon {
+    display: none;
+}
+
+[data-theme="light"] .theme-toggle .moon-icon {
+    display: block;
 }
 
 /* Hamburger */
@@ -659,79 +704,207 @@ img {
 }
 
 /* =========================================
+   Process Steps Chain (سلسلة خطوات التنفيذ)
+   ========================================= */
+.section-process {
+    padding: 4rem 0 3.5rem;
+    position: relative;
+}
+
+.steps-chain {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    position: relative;
+    margin-top: 1rem;
+}
+
+.step-card {
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.035) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 1.8rem 1.4rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.step-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.22);
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.02) 100%);
+    box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.7);
+}
+
+.step-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.3rem;
+}
+
+.step-number {
+    font-size: 1.25rem;
+    font-weight: 800;
+    font-family: monospace;
+    color: var(--text-3);
+    letter-spacing: -0.5px;
+    transition: color 0.3s;
+}
+
+.step-card:hover .step-number {
+    color: #fff;
+}
+
+.step-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #d4d4d8;
+    transition: all 0.3s var(--ease);
+}
+
+.step-card:hover .step-icon {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.22);
+    color: #fff;
+    transform: scale(1.06);
+}
+
+.step-title {
+    font-size: 1.12rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.2px;
+}
+
+.step-desc {
+    font-size: 0.86rem;
+    color: var(--text-2);
+    line-height: 1.75;
+    flex-grow: 1;
+}
+
+/* =========================================
    Expertise
    ========================================= */
 .expertise-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
+    gap: 1.5rem;
 }
 
 .expertise-card {
-    background: var(--bg);
-    padding: 2rem;
-    transition: background 0.3s var(--ease);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 2.2rem 2rem;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
-    cursor: default;
-}
-
-.expertise-card::before {
-    display: none;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .expertise-card:hover {
-    background: var(--bg-raised);
-    transform: none;
-    box-shadow: none;
-    border-color: transparent;
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.6);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
 }
 
 .card-shine {
     display: none;
 }
 
+.card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.4rem;
+}
+
+.card-badge {
+    font-size: 0.76rem;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-2);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    letter-spacing: -0.2px;
+}
+
 .card-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 1.2rem;
-    background: var(--bg-raised);
-    border: 1px solid var(--border);
-    color: var(--text-2);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #d4d4d8;
+    transition: all 0.3s var(--ease);
 }
 
-.card-icon-blue,
-.card-icon-purple,
-.card-icon-teal,
-.card-icon-amber {
-    background: var(--bg-raised);
-    border-color: var(--border);
-    color: var(--text-2);
+.expertise-card:hover .card-icon {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.22);
+    color: #fff;
+    transform: scale(1.06);
 }
 
 .card-icon svg {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
 }
 
 .expertise-card h3 {
-    font-size: 1.05rem;
-    font-weight: 600;
-    margin-bottom: 0.4rem;
-    color: var(--text);
+    font-size: 1.22rem;
+    font-weight: 700;
+    margin-bottom: 0.65rem;
+    color: #fff;
+    letter-spacing: -0.3px;
 }
 
 .expertise-card p {
     color: var(--text-2);
-    font-size: 0.88rem;
-    line-height: 1.75;
+    font-size: 0.92rem;
+    line-height: 1.8;
+    flex-grow: 1;
+}
+
+.card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 1.5rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.card-tags .tag {
+    font-size: 0.76rem;
+    padding: 4px 11px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-3);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    font-weight: 500;
+    transition: color 0.25s, border-color 0.25s;
+}
+
+.expertise-card:hover .card-tags .tag {
+    color: var(--text-2);
+    border-color: rgba(255, 255, 255, 0.12);
 }
 
 /* =========================================
@@ -892,11 +1065,10 @@ img {
 /* =========================================
    Contact
    ========================================= */
-.contact-grid {
-    display: grid;
-    grid-template-columns: 1.2fr 0.8fr;
-    gap: 2rem;
-    align-items: start;
+.contact-center {
+    max-width: 580px;
+    margin: 0 auto;
+    width: 100%;
 }
 
 .contact-form {
@@ -1051,54 +1223,276 @@ img {
     border-color: var(--border-hover);
 }
 
-/* Freelance */
-.freelance-badge {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.9rem;
-    padding: 1.2rem;
-    background: var(--bg-raised);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
+/* =========================================
+   Footer Saudi Business Center Button
+   ========================================= */
+.footer-cert-btn {
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), filter 0.25s;
+    outline: none;
+    filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.45));
 }
 
-.freelance-icon {
-    width: 38px;
-    height: 38px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
+.footer-cert-btn:hover {
+    transform: translateY(-2px) scale(1.1);
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.8)) brightness(1.2);
+}
+
+.footer-cert-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+/* =========================================
+   Certificate Modal (الشهادة والتوثيق)
+   ========================================= */
+.cert-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #4ade80;
+    padding: 1.25rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cert-modal-backdrop.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.cert-modal-dialog {
+    background: #111114;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 520px;
+    box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.9);
+    overflow: hidden;
+    transform: scale(0.94) translateY(12px);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+}
+
+.cert-modal-backdrop.is-open .cert-modal-dialog {
+    transform: scale(1) translateY(0);
+}
+
+.cert-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.cert-header-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.cert-header-logo {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
 }
 
-.freelance-badge h4 {
-    font-size: 0.9rem;
-    color: var(--text);
-    font-weight: 600;
-    margin-bottom: 3px;
+.cert-header-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
-.freelance-badge p {
-    font-size: 0.82rem;
-    color: var(--text-3);
-    line-height: 1.6;
+.cert-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 2px;
 }
 
-.verify-link {
-    color: var(--text-2);
+.cert-subtitle {
     font-size: 0.78rem;
-    font-weight: 600;
-    display: inline-block;
-    margin-top: 5px;
-    transition: color 0.2s;
+    color: var(--text-3);
+    margin: 0;
 }
 
-.verify-link:hover {
-    color: var(--text);
+.cert-close-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    outline: none;
+}
+
+.cert-close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.cert-modal-body {
+    padding: 1.5rem;
+}
+
+.official-cert-card {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.035) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 16px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.cert-watermark-logo {
+    position: absolute;
+    left: -25px;
+    bottom: -25px;
+    width: 190px;
+    height: 190px;
+    opacity: 0.045;
+    pointer-events: none;
+}
+
+.cert-watermark-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.cert-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.3rem;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.cert-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    color: #4ade80;
+    font-size: 0.76rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 999px;
+}
+
+.cert-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 8px #22c55e;
+}
+
+.cert-serial-no {
+    font-size: 0.74rem;
+    color: var(--text-3);
+    font-family: monospace;
+    letter-spacing: 0.5px;
+}
+
+.cert-holder-info {
+    margin-bottom: 1.2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding-bottom: 1rem;
+}
+
+.cert-holder-label {
+    font-size: 0.75rem;
+    color: var(--text-3);
+    display: block;
+    margin-bottom: 4px;
+}
+
+.cert-holder-name {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.3px;
+    margin: 0;
+}
+
+.cert-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin-bottom: 1.3rem;
+}
+
+.cert-grid-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    font-size: 0.85rem;
+}
+
+.cgi-label {
+    color: var(--text-3);
+    font-weight: 500;
+}
+
+.cgi-value {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.verified-highlight {
+    color: #4ade80 !important;
+}
+
+.cert-card-footer {
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.cert-security-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    color: var(--text-2);
 }
 
 /* =========================================
@@ -1133,6 +1527,12 @@ img {
 
 .footer-links a:hover {
     color: var(--text);
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .footer-logo .logo {
@@ -1234,6 +1634,19 @@ img {
     .contact-grid {
         grid-template-columns: 1fr;
     }
+
+    .steps-chain {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem;
+    }
+
+    .steps-chain::before {
+        display: none;
+    }
+
+    .step-arrow {
+        display: none;
+    }
 }
 
 /* =========================================
@@ -1242,6 +1655,46 @@ img {
 @media (max-width: 768px) {
     :root {
         font-size: 15px;
+    }
+
+    .steps-chain {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+
+    .step-card {
+        padding: 1.15rem 0.95rem;
+        border-radius: 14px;
+    }
+
+    .step-top {
+        margin-bottom: 0.75rem;
+    }
+
+    .step-number {
+        font-size: 1.05rem;
+    }
+
+    .step-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 9px;
+    }
+
+    .step-icon svg {
+        width: 17px;
+        height: 17px;
+    }
+
+    .step-title {
+        font-size: 0.92rem;
+        margin-bottom: 0.35rem;
+        line-height: 1.35;
+    }
+
+    .step-desc {
+        font-size: 0.74rem;
+        line-height: 1.55;
     }
 
     .nav-desktop {
@@ -1332,31 +1785,55 @@ img {
 
     .expertise-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
     }
 
     .expertise-card {
-        padding: 1.15rem 1rem;
+        padding: 1.15rem 0.95rem;
+        border-radius: 14px;
     }
 
-    .expertise-card .card-icon {
-        width: 34px;
-        height: 34px;
+    .expertise-card .card-top {
         margin-bottom: 0.75rem;
     }
 
+    .expertise-card .card-badge {
+        font-size: 0.64rem;
+        padding: 2px 6px;
+        white-space: nowrap;
+    }
+
+    .expertise-card .card-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 9px;
+    }
+
     .expertise-card .card-icon svg {
-        width: 18px;
-        height: 18px;
+        width: 17px;
+        height: 17px;
     }
 
     .expertise-card h3 {
         font-size: 0.92rem;
         margin-bottom: 0.35rem;
+        line-height: 1.35;
     }
 
     .expertise-card p {
-        font-size: 0.78rem;
+        font-size: 0.74rem;
         line-height: 1.55;
+    }
+
+    .expertise-card .card-tags {
+        margin-top: 0.75rem;
+        padding-top: 0.65rem;
+        gap: 4px;
+    }
+
+    .expertise-card .card-tags .tag {
+        font-size: 0.64rem;
+        padding: 2px 6px;
     }
 
     .project-card {
@@ -1388,6 +1865,24 @@ img {
         grid-template-columns: 1fr;
     }
 
+    .freelance-badge {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1.2rem;
+    }
+
+    .freelance-badge-info {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 0.9rem;
+    }
+
+    .verify-link {
+        width: 100%;
+        justify-content: center;
+    }
+
     .footer-content {
         flex-direction: column;
         gap: 1rem;
@@ -1400,6 +1895,29 @@ img {
 
     .footer-logo {
         order: -2;
+        justify-content: center;
+    }
+
+    .cert-modal-dialog {
+        border-radius: 16px;
+    }
+
+    .cert-modal-header {
+        padding: 1rem 1.2rem;
+    }
+
+    .cert-modal-body {
+        padding: 1.1rem;
+    }
+
+    .official-cert-card {
+        padding: 1.2rem;
+    }
+
+    .cert-grid-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
     }
 }
 
@@ -1426,6 +1944,21 @@ img {
     .project-actions .btn {
         width: 100%;
         justify-content: center;
+    }
+
+    .expertise-card,
+    .step-card {
+        padding: 0.95rem 0.75rem;
+    }
+
+    .expertise-card h3,
+    .step-title {
+        font-size: 0.86rem;
+    }
+
+    .expertise-card p,
+    .step-desc {
+        font-size: 0.71rem;
     }
 }
 
@@ -1466,4 +1999,285 @@ img {
         opacity: 1;
         transform: none;
     }
+}
+
+/* =========================================
+   Light Mode Theme — Elegant Editorial Light
+   ========================================= */
+[data-theme="light"] {
+    --bg: #f8fafc;
+    --bg-raised: #ffffff;
+    --bg-hover: #f1f5f9;
+
+    --border: rgba(0, 0, 0, 0.08);
+    --border-hover: rgba(0, 0, 0, 0.16);
+
+    --text: #0f172a;
+    --text-2: #475569;
+    --text-3: #64748b;
+
+    --accent: #0f172a;
+}
+
+[data-theme="light"] ::selection {
+    background: rgba(15, 23, 42, 0.12);
+    color: #0f172a;
+}
+
+[data-theme="light"] ::-webkit-scrollbar-track {
+    background: #f8fafc;
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.14);
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.24);
+}
+
+[data-theme="light"] * {
+    scrollbar-color: rgba(0, 0, 0, 0.14) #f8fafc;
+}
+
+[data-theme="light"] .hero-title,
+[data-theme="light"] .stat-number,
+[data-theme="light"] .step-title,
+[data-theme="light"] .expertise-card h3,
+[data-theme="light"] .project-title,
+[data-theme="light"] .section-title,
+[data-theme="light"] .cert-title,
+[data-theme="light"] .cert-holder-name,
+[data-theme="light"] .cgi-value,
+[data-theme="light"] .logo,
+[data-theme="light"] .contact-info-card h4,
+[data-theme="light"] .info-link,
+[data-theme="light"] .social-links-section h4 {
+    color: #0f172a;
+}
+
+[data-theme="light"] .gradient-text {
+    color: #0f172a;
+    background: linear-gradient(135deg, #0f172a 40%, #475569 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+[data-theme="light"] .step-card {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .step-card:hover {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.18);
+    box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .step-number {
+    color: #94a3b8;
+}
+
+[data-theme="light"] .step-card:hover .step-number {
+    color: #0f172a;
+}
+
+[data-theme="light"] .step-icon {
+    background: #f1f5f9;
+    border-color: rgba(0, 0, 0, 0.08);
+    color: #334155;
+}
+
+[data-theme="light"] .step-card:hover .step-icon {
+    background: #e2e8f0;
+    border-color: rgba(0, 0, 0, 0.16);
+    color: #0f172a;
+}
+
+[data-theme="light"] .expertise-card {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .expertise-card:hover {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.18);
+    box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .card-icon {
+    background: #f1f5f9;
+    border-color: rgba(0, 0, 0, 0.08);
+    color: #334155;
+}
+
+[data-theme="light"] .expertise-card:hover .card-icon {
+    background: #e2e8f0;
+    border-color: rgba(0, 0, 0, 0.16);
+    color: #0f172a;
+}
+
+[data-theme="light"] .card-badge {
+    background: #f1f5f9;
+    border-color: rgba(0, 0, 0, 0.08);
+    color: #475569;
+}
+
+[data-theme="light"] .card-tags {
+    border-top-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .card-tags .tag {
+    background: #f8fafc;
+    border-color: rgba(0, 0, 0, 0.08);
+    color: #64748b;
+}
+
+[data-theme="light"] .expertise-card:hover .card-tags .tag {
+    color: #334155;
+    border-color: rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .project-card {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .project-card:hover {
+    border-color: rgba(0, 0, 0, 0.18);
+    box-shadow: 0 12px 30px -6px rgba(0, 0, 0, 0.09);
+}
+
+[data-theme="light"] .tech-pill {
+    background: #f8fafc;
+    border-color: rgba(0, 0, 0, 0.09);
+    color: #475569;
+}
+
+[data-theme="light"] .contact-form,
+[data-theme="light"] .contact-info-card,
+[data-theme="light"] .social-links-section {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .form-group input,
+[data-theme="light"] .form-group textarea {
+    background: #f8fafc;
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #0f172a;
+}
+
+[data-theme="light"] .form-group input:focus,
+[data-theme="light"] .form-group textarea:focus {
+    background: #ffffff;
+    border-color: #0f172a;
+}
+
+[data-theme="light"] .info-icon,
+[data-theme="light"] .social-btn {
+    background: #f8fafc;
+    border-color: rgba(0, 0, 0, 0.08);
+    color: #475569;
+}
+
+[data-theme="light"] .social-btn:hover {
+    background: #f1f5f9;
+    border-color: rgba(0, 0, 0, 0.2);
+    color: #0f172a;
+}
+
+[data-theme="light"] .badge-status {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.08);
+    color: #475569;
+}
+
+[data-theme="light"] .hero-stats {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .stat-divider {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .code-window {
+    box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.18);
+    border-color: rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .navbar {
+    background: rgba(248, 250, 252, 0.85);
+}
+
+[data-theme="light"] .navbar.scrolled {
+    background: rgba(248, 250, 252, 0.96);
+    border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .mobile-menu {
+    background: rgba(248, 250, 252, 0.98);
+}
+
+[data-theme="light"] .footer {
+    border-top-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .footer-cert-btn {
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.12));
+}
+
+[data-theme="light"] .footer-cert-btn:hover {
+    filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.22));
+}
+
+[data-theme="light"] .cert-modal-dialog {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.12);
+    box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="light"] .cert-modal-header {
+    background: #f8fafc;
+    border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .cert-header-logo {
+    background: #f1f5f9;
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .cert-close-btn {
+    background: #f1f5f9;
+    border-color: rgba(0, 0, 0, 0.08);
+    color: #64748b;
+}
+
+[data-theme="light"] .cert-close-btn:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+[data-theme="light"] .official-cert-card {
+    background: #f8fafc;
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .cert-holder-info {
+    border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .cert-grid-item {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .cert-card-footer {
+    border-top-color: rgba(0, 0, 0, 0.08);
 }

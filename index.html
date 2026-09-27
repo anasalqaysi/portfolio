@@ -17,6 +17,16 @@
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="style.css">
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
 </head>
 
 <body>
@@ -33,21 +43,40 @@
                 </a>
                 <nav class="nav-desktop">
                     <ul class="nav-links">
-                        <li><a href="#expertise">الخبرات</a></li>
+                        <li><a href="#process">خطوات العمل</a></li>
+                        <li><a href="#expertise">الخدمات</a></li>
                         <li><a href="#work">الأعمال</a></li>
                         <li><a href="#contact">تواصل معي</a></li>
                     </ul>
                 </nav>
-                <a href="#contact" class="btn btn-nav">ابدأ مشروعك</a>
+                <div class="nav-actions">
+                    <button class="theme-toggle" id="themeToggle" type="button" aria-label="تبديل مظهر الموقع" title="تبديل المظهر (فاتح / داكن)">
+                        <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </button>
+                    <a href="#contact" class="btn btn-nav">ابدأ مشروعك</a>
 
-                <!-- Mobile Menu Toggle -->
-                <button class="menu-toggle" id="menuToggle" aria-label="القائمة">
-                    <span class="hamburger">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </span>
-                </button>
+                    <!-- Mobile Menu Toggle -->
+                    <button class="menu-toggle" id="menuToggle" aria-label="القائمة">
+                        <span class="hamburger">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </span>
+                    </button>
+                </div>
             </div>
         </div>
     </header>
@@ -57,7 +86,8 @@
         <div class="mobile-menu-content">
             <nav>
                 <ul class="mobile-nav-links">
-                    <li><a href="#expertise" class="mobile-link">الخبرات</a></li>
+                    <li><a href="#process" class="mobile-link">خطوات العمل</a></li>
+                    <li><a href="#expertise" class="mobile-link">الخدمات</a></li>
                     <li><a href="#work" class="mobile-link">الأعمال</a></li>
                     <li><a href="#contact" class="mobile-link">تواصل معي</a></li>
                 </ul>
@@ -75,13 +105,12 @@
                     <div class="hero-content">
 
                         <h1 class="hero-title animate-fade-up delay-1">
-                            تحويل الأفكار إلى
-                            <span class="gradient-text">أنظمة ومنتجات رقمية</span>
-                            متكاملة.
+                            تصميم وتطوير
+                            <span class="gradient-text">مواقع تعريفية ومعارض أعمال</span>
+                            عصرية وأنيقة.
                         </h1>
                         <p class="hero-desc animate-fade-up delay-2">
-                            أركز على هندسة النظم السحابية، أتمتة العمليات بالذكاء الاصطناعي، وتسليم تطبيقات ويب عالية
-                            الاستقرار وقابلة للتوسع لتلبية متطلبات الأعمال الفعلية.
+                            متخصص في تصميم مواقع تعريفية أنيقة، معارض أعمال للمصممين، مواقع لمكاتب المحاماة والاستشارات الهندسية، وقوائم رقمية جذابة — واجهات عصرية وسريعة تعكس احترافية نشاطك وتجذب عملاءك.
                         </p>
                         <div class="hero-actions animate-fade-up delay-3">
                             <a href="#contact" class="btn btn-primary btn-glow">
@@ -140,65 +169,179 @@
             </div>
         </section>
 
+        <!-- Process Section -->
+        <section id="process" class="section section-process">
+            <div class="container">
+                <div class="section-header section-header-center">
+                    <h2 class="section-title">خطوات التنفيذ</h2>
+                    <p class="section-subtitle">من الفكرة إلى موقع حي يعمل بكفاءة — رحلة واضحة وسريعة من 4 خطوات</p>
+                </div>
+
+                <div class="steps-chain">
+                    <!-- Step 1 -->
+                    <div class="step-card">
+                        <div class="step-top">
+                            <span class="step-number">01</span>
+                            <div class="step-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <h3 class="step-title">فهم الطلب والمحتوى</h3>
+                        <p class="step-desc">نتفق على نوع موقعك (معرض أعمال، موقع تعريفي، أو منيو)، ونستلم منك شعارك، ونصوص نشاطك، وصورك.</p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="step-card">
+                        <div class="step-top">
+                            <span class="step-number">02</span>
+                            <div class="step-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="3" y1="9" x2="21" y2="9"></line>
+                                    <line x1="9" y1="21" x2="9" y2="9"></line>
+                                </svg>
+                            </div>
+                        </div>
+                        <h3 class="step-title">التصميم والتنفيذ</h3>
+                        <p class="step-desc">نبني واجهة موقعك بأسلوب عصري وأنيق مع سرعة تصفح عالية وتوافق تام 100% مع شاشات الجوال.</p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="step-card">
+                        <div class="step-top">
+                            <span class="step-number">03</span>
+                            <div class="step-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </div>
+                        </div>
+                        <h3 class="step-title">المعاينة والتعديل</h3>
+                        <p class="step-desc">نرسل لك رابطاً حياً لمعاينة الموقع وتجربته بنفسك، ونقوم بأي تعديلات حتى يناسب تطلعاتك تماماً.</p>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="step-card step-card-final">
+                        <div class="step-top">
+                            <span class="step-number">04</span>
+                            <div class="step-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                                </svg>
+                            </div>
+                        </div>
+                        <h3 class="step-title">التسليم والإطلاق</h3>
+                        <p class="step-desc">نربط موقعك بالدومين الخاص بك ونطلقه على السحابة، ليكون جاهزاً لاستقبال عملائك ومشاركة رابطه فوراً.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Expertise Section -->
         <section id="expertise" class="section">
             <div class="container">
                 <div class="section-header">
-
-                    <h2 class="section-title">مجالات التخصص</h2>
-                    <p class="section-subtitle">أقدم حلولاً تقنية شاملة تغطي جميع مراحل بناء المنتجات الرقمية</p>
+                    <h2 class="section-title">حلول ومواقع مخصصة</h2>
+                    <p class="section-subtitle">تصاميم عصرية واحترافية تلبي احتياجاتك بدقة وتمنح نشاطك واجهة رقمية مشرفة أمام عملائك</p>
                 </div>
                 <div class="expertise-grid">
+                    <!-- Card 1: Portfolios -->
                     <div class="expertise-card">
-                        <div class="card-icon card-icon-blue">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                                <line x1="8" y1="21" x2="16" y2="21"></line>
-                                <line x1="12" y1="17" x2="12" y2="21"></line>
-                            </svg>
+                        <div class="card-top">
+                            <div class="card-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                </svg>
+                            </div>
+                            <span class="card-badge">للمصممين والمبدعين</span>
                         </div>
-                        <h3>تخطيط وهندسة النظم</h3>
-                        <p>بناء معماريات برمجية متينة تضمن سرعة المعالجة وقابلية التوسع دون مشاكل مستقبلية.</p>
-                        <div class="card-shine"></div>
+                        <h3>معارض أعمال وبورتفوليو</h3>
+                        <p>إبراز المشاريع والأعمال الإبداعية للمصممين والمصورين والمهندسين المعماريين بتنسيق بصري جذاب وتجربة تصفح تترك أثراً دائماً.</p>
+                        <div class="card-tags">
+                            <span class="tag">عرض عالي الدقة</span>
+                            <span class="tag">واجهة تفاعلية</span>
+                            <span class="tag">تنسيق عصري</span>
+                        </div>
                     </div>
+
+                    <!-- Card 2: Business & Firm Profiles -->
                     <div class="expertise-card">
-                        <div class="card-icon card-icon-purple">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 2a4 4 0 0 1 4 4c0 1.95-1.4 3.58-3.25 3.93L12 22"></path>
-                                <path d="M12 2a4 4 0 0 0-4 4c0 1.95 1.4 3.58 3.25 3.93"></path>
-                                <path d="M4 13h16"></path>
-                                <path d="M4 17h16"></path>
-                            </svg>
+                        <div class="card-top">
+                            <div class="card-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 21h18"></path>
+                                    <path d="M5 21V7l8-4v18"></path>
+                                    <path d="M19 21V11l-6-4"></path>
+                                    <path d="M9 9v.01"></path>
+                                    <path d="M9 12v.01"></path>
+                                    <path d="M9 15v.01"></path>
+                                    <path d="M9 18v.01"></path>
+                                </svg>
+                            </div>
+                            <span class="card-badge">للمكاتب والشركات</span>
                         </div>
-                        <h3>التطوير بالذكاء الاصطناعي</h3>
-                        <p>تسخير النماذج الذكية لأتمتة المهام المعقدة وتسريع دورة بناء وتطوير المنتجات.</p>
-                        <div class="card-shine"></div>
+                        <h3>مواقع تعريفية للمكاتب والشركات</h3>
+                        <p>واجهات راقية لمكاتب المحاماة، الاستشارات الهندسية، والعيادات؛ تعكس موثوقية خدماتك وتسهل طلب الاستشارات والتواصل المباشر.</p>
+                        <div class="card-tags">
+                            <span class="tag">هوية مؤسسية رصينة</span>
+                            <span class="tag">استعراض الخدمات</span>
+                            <span class="tag">تواصل واتصال سريع</span>
+                        </div>
                     </div>
+
+                    <!-- Card 3: Digital Menus -->
                     <div class="expertise-card">
-                        <div class="card-icon card-icon-teal">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
-                                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
-                                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
-                            </svg>
+                        <div class="card-top">
+                            <div class="card-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                                    <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                                    <line x1="6" y1="1" x2="6" y2="4"></line>
+                                    <line x1="10" y1="1" x2="10" y2="4"></line>
+                                    <line x1="14" y1="1" x2="14" y2="4"></line>
+                                </svg>
+                            </div>
+                            <span class="card-badge">للمقاهي والمطاعم</span>
                         </div>
-                        <h3>قواعد البيانات السحابية</h3>
-                        <p>هندسة بنية بيانات آمنة ومرنة مع ضبط دقيق للأداء والحماية ومصادقة المستخدمين.</p>
-                        <div class="card-shine"></div>
+                        <h3>منيو وقوائم رقمية (QR Menu)</h3>
+                        <p>قوائم إلكترونية تفاعلية تفتح فوراً عبر مسح الباركود على جميع الهواتف الذكية بدون أي تطبيق، بتنظيم سلس وصور واضحة.</p>
+                        <div class="card-tags">
+                            <span class="tag">فتح فوري بالباركود</span>
+                            <span class="tag">تحديث مرن للأسعار</span>
+                            <span class="tag">متجاوب مع كل الأجهزة</span>
+                        </div>
                     </div>
+
+                    <!-- Card 4: Landing Pages & Speed -->
                     <div class="expertise-card">
-                        <div class="card-icon card-icon-amber">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
-                            </svg>
+                        <div class="card-top">
+                            <div class="card-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                                </svg>
+                            </div>
+                            <span class="card-badge">حملات وتسويق مباشر</span>
                         </div>
-                        <h3>إطلاق النماذج الأولية (MVPs)</h3>
-                        <p>تحويل المتطلبات إلى منتج حي يعمل بكفاءة وجاهز للإطلاق والاختبار بأقصر وقت ممكن.</p>
-                        <div class="card-shine"></div>
+                        <h3>صفحات هبوط سريعة وخفيفة</h3>
+                        <p>صفحات تسويقية مخصصة لحملاتك الإعلانية وخدماتك المحددة، مصممة بسرعة تحميل فائقة لتوجيه الزوار للطلب أو المحادثة مباشرة.</p>
+                        <div class="card-tags">
+                            <span class="tag">سرعة تحميل فائقة</span>
+                            <span class="tag">ربط مباشر مع واتساب</span>
+                            <span class="tag">توجيه فعال للزائر</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -220,16 +363,16 @@
                                 <div class="swiper-wrapper">
                                     <div class="swiper-slide"><img src="projects/sijilli/sijilli-main.png"
                                             alt="منصة سجلي للخدمات الإلكترونية" loading="eager"></div>
-                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-1.png" alt="منصة سجلي"
-                                            loading="lazy"></div>
-                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-2.png" alt="منصة سجلي"
-                                            loading="lazy"></div>
-                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-3.png" alt="منصة سجلي"
-                                            loading="lazy"></div>
-                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-4.png" alt="منصة سجلي"
-                                            loading="lazy"></div>
-                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-5.png" alt="منصة سجلي"
-                                            loading="lazy"></div>
+                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-1.png"
+                                            alt="منصة سجلي" loading="lazy"></div>
+                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-2.png"
+                                            alt="منصة سجلي" loading="lazy"></div>
+                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-3.png"
+                                            alt="منصة سجلي" loading="lazy"></div>
+                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-4.png"
+                                            alt="منصة سجلي" loading="lazy"></div>
+                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-5.png"
+                                            alt="منصة سجلي" loading="lazy"></div>
                                 </div>
                                 <div class="swiper-pagination"></div>
                                 <div class="swiper-button-prev"></div>
@@ -273,12 +416,10 @@
         <section id="contact" class="section">
             <div class="container">
                 <div class="section-header section-header-center">
-
                     <h2 class="section-title">دعنا نتحدث حول مشروعك القادم</h2>
-                    <p class="section-subtitle">مهتم بمناقشة فكرة نظام جديد أو بناء نموذج أولي سريع؟ أنا هنا للمساعدة
-                    </p>
+                    <p class="section-subtitle">جاهز لتصميم موقعك الجديد أو لديك أي استفسار؟ تواصل معي مباشرة وسأرد عليك سريعاً</p>
                 </div>
-                <div class="contact-grid">
+                <div class="contact-center">
                     <form class="contact-form" id="contactForm">
                         <div class="form-row">
                             <div class="form-group">
@@ -290,20 +431,10 @@
                                 <input type="tel" id="phone" required placeholder="05x xxx xxxx">
                             </div>
                         </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="email">البريد الإلكتروني (اختياري)</label>
-                                <input type="email" id="email" placeholder="name@domain.com">
-                            </div>
-                            <div class="form-group">
-                                <label for="subject">الموضوع</label>
-                                <input type="text" id="subject" placeholder="مشروع جديد / استشارة تقنية">
-                            </div>
-                        </div>
                         <div class="form-group">
-                            <label for="msg">تفاصيل المشروع أو الاستفسار</label>
+                            <label for="msg">الرسالة</label>
                             <textarea id="msg" rows="5" required
-                                placeholder="أخبرني بنبذة عن الفكرة أو المشكلة التقنية..."></textarea>
+                                placeholder="اكتب تفاصيل طلبك أو استفسارك هنا..."></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary btn-glow btn-submit">
                             <span>إرسال الرسالة</span>
@@ -314,55 +445,6 @@
                             </svg>
                         </button>
                     </form>
-
-                    <div class="contact-sidebar">
-                        <div class="contact-info-card">
-                            <div class="info-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="1.5">
-                                    <path
-                                        d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
-                                    </path>
-                                    <polyline points="22,6 12,13 2,6"></polyline>
-                                </svg>
-                            </div>
-                            <div>
-                                <h4>البريد الإلكتروني</h4>
-                                <a href="mailto:contact@anasalqaysi.tech" class="info-link">contact@anasalqaysi.tech</a>
-                            </div>
-                        </div>
-
-                        <div class="contact-info-card">
-                            <div class="info-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="1.5">
-                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                    <circle cx="12" cy="10" r="3"></circle>
-                                </svg>
-                            </div>
-                            <div>
-                                <h4>الموقع</h4>
-                                <p class="info-text">المملكة العربية السعودية</p>
-                            </div>
-                        </div>
-
-
-
-                        <div class="freelance-badge">
-                            <div class="freelance-icon">
-                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                                </svg>
-                            </div>
-                            <div>
-                                <h4>موثق ومُصرح للعمل الحر</h4>
-                                <p>حاصل على "وثيقة العمل الحر" المعتمدة، مما يضمن لك موثوقية عالية وتعاقد رسمي.</p>
-                                <a href="#" class="verify-link">التحقق من الوثيقة ←</a>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>
@@ -376,16 +458,89 @@
                         <img src="logo2.svg" alt="Anas Developer" class="logo-img">
                         <span>Anas Developer</span>
                     </a>
+                    <button type="button" class="footer-cert-btn" id="openCertBtn" title="وثيقة العمل الحر - المركز السعودي للأعمال" aria-label="عرض وثيقة العمل الحر المعتمدة">
+                        <img src="business-center-logo.svg" alt="المركز السعودي للأعمال" class="footer-cert-img">
+                    </button>
                 </div>
                 <p class="footer-text">&copy; 2026 Anas Developer. جميع الحقوق محفوظة.</p>
                 <div class="footer-links">
-                    <a href="#expertise">الخبرات</a>
+                    <a href="#process">خطوات العمل</a>
+                    <a href="#expertise">الخدمات</a>
                     <a href="#work">الأعمال</a>
                     <a href="#contact">تواصل</a>
                 </div>
             </div>
         </div>
     </footer>
+
+    <!-- Modal: شهادة منصة الأعمال -->
+    <div class="cert-modal-backdrop" id="certModal" aria-hidden="true" role="dialog" aria-modal="true">
+        <div class="cert-modal-dialog">
+            <div class="cert-modal-header">
+                <div class="cert-header-info">
+                    <div class="cert-header-logo">
+                        <img src="business-center-logo.svg" alt="شعار المركز السعودي للأعمال">
+                    </div>
+                    <div>
+                        <h3 class="cert-title">المركز السعودي للأعمال</h3>
+                        <p class="cert-subtitle">منصة الأعمال - وثيقة العمل الحر المعتمدة</p>
+                    </div>
+                </div>
+                <button type="button" class="cert-close-btn" id="closeCertBtn" aria-label="إغلاق النافذة">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="cert-modal-body">
+                <div class="official-cert-card">
+                    <div class="cert-watermark-logo">
+                        <img src="business-center-logo.svg" alt="">
+                    </div>
+                    <div class="cert-card-header">
+                        <div class="cert-status-pill">
+                            <span class="cert-status-dot"></span>
+                            موثق ومُعتمد رسمياً
+                        </div>
+                        <span class="cert-serial-no">رمز الاعتماد: FL-2026-SA</span>
+                    </div>
+
+                    <div class="cert-card-body">
+                        <div class="cert-holder-info">
+                            <span class="cert-holder-label">الاسم المعتمد</span>
+                            <h4 class="cert-holder-name">أنس القيسي</h4>
+                        </div>
+
+                        <div class="cert-grid">
+                            <div class="cert-grid-item">
+                                <span class="cgi-label">النشاط المرخص:</span>
+                                <span class="cgi-value">تطوير وتصميم المواقع والمتاجر الإلكترونية</span>
+                            </div>
+                            <div class="cert-grid-item">
+                                <span class="cgi-label">الجهة المصدرة:</span>
+                                <span class="cgi-value">المركز السعودي للأعمال / العمل الحر</span>
+                            </div>
+                            <div class="cert-grid-item">
+                                <span class="cgi-label">الحالة القانونية:</span>
+                                <span class="cgi-value verified-highlight">سارية ومصرح بها للتعاقد الرسمي ✓</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cert-card-footer">
+                        <div class="cert-security-badge">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                            <span>تعاقد قانوني معتمد ومحمي لجميع العملاء</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Swiper JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
@@ -450,11 +605,11 @@
         });
 
         // =============================================
-        // Scroll Reveal Animation
+        // Scroll Reveal Animations
         // =============================================
         const observerOptions = {
             threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
+            rootMargin: '0px 0px -40px 0px'
         };
 
         const observer = new IntersectionObserver((entries) => {
@@ -466,7 +621,7 @@
             });
         }, observerOptions);
 
-        document.querySelectorAll('.expertise-card, .project-card, .contact-form, .contact-sidebar, .section-header').forEach(el => {
+        document.querySelectorAll('.expertise-card, .project-card, .contact-form, .section-header, .step-card, .footer-freelance').forEach(el => {
             el.classList.add('reveal');
             observer.observe(el);
         });
@@ -479,8 +634,6 @@
             const btn = e.target.querySelector('.btn-submit');
             const name = document.getElementById('name').value;
             const phone = document.getElementById('phone').value;
-            const email = document.getElementById('email').value;
-            const subject = document.getElementById('subject').value || 'رسالة جديدة من الموقع الشخصي';
             const message = document.getElementById('msg').value;
 
             btn.disabled = true;
@@ -494,11 +647,9 @@
                         'Accept': 'application/json'
                     },
                     body: JSON.stringify({
-                        _subject: `رسالة موقع Anas Developer: ${subject}`,
+                        _subject: `طلب تواصل جديد من: ${name} (${phone})`,
                         الاسم: name,
                         الجوال: phone,
-                        البريد: email,
-                        الموضوع: subject,
                         الرسالة: message
                     })
                 });
@@ -523,18 +674,7 @@
             }
         });
 
-        // =============================================
-        // Smooth mouse-follow glow on expertise cards
-        // =============================================
-        document.querySelectorAll('.expertise-card').forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                card.style.setProperty('--mouse-x', `${x}px`);
-                card.style.setProperty('--mouse-y', `${y}px`);
-            });
-        });
+
 
         // =============================================
         // Typewriter Animation for Code Showcase Window
@@ -550,9 +690,11 @@
             { text: ';\n  ' },
             { text: 'type', class: 'code-prop' },
             { text: ': ' },
-            { text: "'Web App'", class: 'code-string' },
+            { text: "'Portfolio'", class: 'code-string' },
             { text: ' | ' },
-            { text: "'E-commerce'", class: 'code-string' },
+            { text: "'Business Profile'", class: 'code-string' },
+            { text: ' | ' },
+            { text: "'Digital Menu'", class: 'code-string' },
             { text: ';\n}\n\n' },
             { text: 'export function', class: 'code-keyword' },
             { text: ' ' },
@@ -620,6 +762,62 @@
         }
 
         window.addEventListener('DOMContentLoaded', initCodeTyping);
+
+        // =============================================
+        // Certificate Modal Logic
+        // =============================================
+        const openCertBtn = document.getElementById('openCertBtn');
+        const closeCertBtn = document.getElementById('closeCertBtn');
+        const certModal = document.getElementById('certModal');
+
+        function openModal() {
+            if (!certModal) return;
+            certModal.classList.add('is-open');
+            certModal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            if (!certModal) return;
+            certModal.classList.remove('is-open');
+            certModal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+
+        if (openCertBtn) {
+            openCertBtn.addEventListener('click', openModal);
+        }
+        if (closeCertBtn) {
+            closeCertBtn.addEventListener('click', closeModal);
+        }
+        if (certModal) {
+            certModal.addEventListener('click', (e) => {
+                if (e.target === certModal) {
+                    closeModal();
+                }
+            });
+        }
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && certModal && certModal.classList.contains('is-open')) {
+                closeModal();
+            }
+        });
+
+        // =============================================
+        // Theme Switcher (Dark / Light Mode)
+        // =============================================
+        const themeToggle = document.getElementById('themeToggle');
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        if (themeToggle) {
+            themeToggle.addEventListener('click', toggleTheme);
+        }
     </script>
 </body>
 
