@@ -1307,12 +1307,15 @@ img {
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 20px;
     width: 100%;
-    max-width: 520px;
+    max-width: 860px;
     box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.9);
     overflow: hidden;
     transform: scale(0.94) translateY(12px);
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
+    max-height: 94vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .cert-modal-backdrop.is-open .cert-modal-dialog {
@@ -1323,9 +1326,10 @@ img {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.2rem 1.5rem;
+    padding: 1.1rem 1.5rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     background: rgba(255, 255, 255, 0.02);
+    flex-shrink: 0;
 }
 
 .cert-header-info {
@@ -1379,6 +1383,7 @@ img {
     cursor: pointer;
     transition: all 0.2s;
     outline: none;
+    flex-shrink: 0;
 }
 
 .cert-close-btn:hover {
@@ -1388,41 +1393,40 @@ img {
 }
 
 .cert-modal-body {
-    padding: 1.5rem;
+    padding: 1.25rem 1.5rem;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
-.official-cert-card {
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.035) 0%, rgba(255, 255, 255, 0.01) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.09);
-    border-radius: 16px;
-    padding: 1.5rem;
-    position: relative;
-    overflow: hidden;
-}
-
-.cert-watermark-logo {
-    position: absolute;
-    left: -25px;
-    bottom: -25px;
-    width: 190px;
-    height: 190px;
-    opacity: 0.045;
-    pointer-events: none;
-}
-
-.cert-watermark-logo img {
+.cert-document-wrapper {
     width: 100%;
-    height: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cert-document-img {
+    width: 100%;
+    height: auto;
+    display: block;
     object-fit: contain;
 }
 
-.cert-card-header {
+.cert-modal-bottom {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 1.3rem;
+    margin-top: 0.5rem;
+    gap: 12px;
     flex-wrap: wrap;
-    gap: 8px;
 }
 
 .cert-status-pill {
@@ -1432,9 +1436,9 @@ img {
     background: rgba(34, 197, 94, 0.1);
     border: 1px solid rgba(34, 197, 94, 0.25);
     color: #4ade80;
-    font-size: 0.76rem;
+    font-size: 0.8rem;
     font-weight: 600;
-    padding: 4px 12px;
+    padding: 6px 14px;
     border-radius: 999px;
 }
 
@@ -1446,77 +1450,26 @@ img {
     box-shadow: 0 0 8px #22c55e;
 }
 
-.cert-serial-no {
-    font-size: 0.74rem;
-    color: var(--text-3);
-    font-family: monospace;
-    letter-spacing: 0.5px;
-}
-
-.cert-holder-info {
-    margin-bottom: 1.2rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    padding-bottom: 1rem;
-}
-
-.cert-holder-label {
-    font-size: 0.75rem;
-    color: var(--text-3);
-    display: block;
-    margin-bottom: 4px;
-}
-
-.cert-holder-name {
-    font-size: 1.25rem;
-    font-weight: 800;
-    color: #ffffff;
-    letter-spacing: -0.3px;
-    margin: 0;
-}
-
-.cert-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 9px;
-    margin-bottom: 1.3rem;
-}
-
-.cert-grid-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 14px;
-    background: rgba(0, 0, 0, 0.25);
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    font-size: 0.85rem;
-}
-
-.cgi-label {
-    color: var(--text-3);
-    font-weight: 500;
-}
-
-.cgi-value {
-    color: #ffffff;
-    font-weight: 600;
-}
-
-.verified-highlight {
-    color: #4ade80 !important;
-}
-
-.cert-card-footer {
-    padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.cert-security-badge {
-    display: flex;
+.cert-pdf-link {
+    display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-size: 0.78rem;
-    color: var(--text-2);
+    padding: 8px 18px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.cert-pdf-link:hover {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    transform: translateY(-1px);
 }
 
 /* =========================================
