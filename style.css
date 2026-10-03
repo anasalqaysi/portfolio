@@ -1248,7 +1248,9 @@ img {
 
 .footer-cert-img {
     height: 32px;
-    width: auto;
+    width: 32px;
+    min-width: 32px;
+    min-height: 32px;
     object-fit: contain;
     display: block;
 }

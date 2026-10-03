@@ -459,7 +459,10 @@
                         <span>Anas Developer</span>
                     </a>
                     <button type="button" class="footer-cert-btn" id="openCertBtn" title="وثيقة ممارس حر معتمدة - العمل الحر" aria-label="عرض وثيقة العمل الحر المعتمدة">
-                        <img src="ANAS.svg" alt="شعار منصة العمل الحر" class="footer-cert-img">
+                        <img src="ANAS.svg" alt="شعار منصة العمل الحر" class="footer-cert-img" width="32" height="32">
+                    </button>
+                    <button type="button" class="footer-cert-btn" id="openBusinessCertBtn" title="شهادة توثيق التجارة الإلكترونية - المركز السعودي للأعمال" aria-label="عرض شهادة المركز السعودي للأعمال المعتمدة">
+                        <img src="saudi-business-center-logo.png" alt="شعار المركز السعودي للأعمال" class="footer-cert-img" width="32" height="32">
                     </button>
                 </div>
                 <p class="footer-text">&copy; 2026 Anas Developer. جميع الحقوق محفوظة.</p>
@@ -510,6 +513,49 @@
                             <line x1="12" y1="15" x2="12" y2="3"></line>
                         </svg>
                         <span>تحميل الوثيقة (PDF)</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: شهادة المركز السعودي للأعمال -->
+    <div class="cert-modal-backdrop" id="businessCertModal" aria-hidden="true" role="dialog" aria-modal="true">
+        <div class="cert-modal-dialog">
+            <div class="cert-modal-header">
+                <div class="cert-header-info">
+                    <div class="cert-header-logo">
+                        <img src="saudi-business-center-logo.png" alt="شعار المركز السعودي للأعمال">
+                    </div>
+                    <div>
+                        <h3 class="cert-title">المركز السعودي للأعمال</h3>
+                        <p class="cert-subtitle">وزارة التجارة • شهادة توثيق التجارة الإلكترونية</p>
+                    </div>
+                </div>
+                <button type="button" class="cert-close-btn" id="closeBusinessCertBtn" aria-label="إغلاق النافذة">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="cert-modal-body">
+                <div class="cert-document-wrapper">
+                    <img src="business-center-certificate.png" alt="شهادة توثيق التجارة الإلكترونية - المركز السعودي للأعمال - أنس لتطوير البرمجيات" class="cert-document-img">
+                </div>
+                <div class="cert-modal-bottom">
+                    <p class="cert-status-text">
+                        <span>شهادة سارية وموثقة رسمياً:</span>
+                        <strong>0000331044</strong>
+                    </p>
+                    <a href="المركز السعودي للاعمال.pdf" target="_blank" download="شهادة-توثيق-المركز-السعودي-للأعمال-أنس-القيسي.pdf" class="cert-pdf-link" rel="noopener noreferrer">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        <span>تحميل الشهادة (PDF)</span>
                     </a>
                 </div>
             </div>
@@ -738,44 +784,42 @@
         window.addEventListener('DOMContentLoaded', initCodeTyping);
 
         // =============================================
-        // Certificate Modal Logic
+        // Certificate Modals Logic (منصة العمل الحر & المركز السعودي للأعمال)
         // =============================================
-        const openCertBtn = document.getElementById('openCertBtn');
-        const closeCertBtn = document.getElementById('closeCertBtn');
-        const certModal = document.getElementById('certModal');
+        function initCertModal(openBtnId, closeBtnId, modalId) {
+            const openBtn = document.getElementById(openBtnId);
+            const closeBtn = document.getElementById(closeBtnId);
+            const modal = document.getElementById(modalId);
+            if (!modal) return;
 
-        function openModal() {
-            if (!certModal) return;
-            certModal.classList.add('is-open');
-            certModal.setAttribute('aria-hidden', 'false');
-            document.body.style.overflow = 'hidden';
-        }
+            function openModal() {
+                modal.classList.add('is-open');
+                modal.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            }
 
-        function closeModal() {
-            if (!certModal) return;
-            certModal.classList.remove('is-open');
-            certModal.setAttribute('aria-hidden', 'true');
-            document.body.style.overflow = '';
-        }
+            function closeModal() {
+                modal.classList.remove('is-open');
+                modal.setAttribute('aria-hidden', 'true');
+                if (!document.querySelector('.cert-modal-backdrop.is-open')) {
+                    document.body.style.overflow = '';
+                }
+            }
 
-        if (openCertBtn) {
-            openCertBtn.addEventListener('click', openModal);
-        }
-        if (closeCertBtn) {
-            closeCertBtn.addEventListener('click', closeModal);
-        }
-        if (certModal) {
-            certModal.addEventListener('click', (e) => {
-                if (e.target === certModal) {
+            if (openBtn) openBtn.addEventListener('click', openModal);
+            if (closeBtn) closeBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('is-open')) {
                     closeModal();
                 }
             });
         }
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && certModal && certModal.classList.contains('is-open')) {
-                closeModal();
-            }
-        });
+
+        initCertModal('openCertBtn', 'closeCertBtn', 'certModal');
+        initCertModal('openBusinessCertBtn', 'closeBusinessCertBtn', 'businessCertModal');
 
         // =============================================
         // Theme Switcher (Dark / Light Mode)
