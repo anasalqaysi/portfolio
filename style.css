@@ -427,10 +427,6 @@ img {
     overflow: hidden;
 }
 
-.btn-glow::before {
-    display: none;
-}
-
 .btn-submit {
     width: 100%;
     padding: 0.9rem;
@@ -697,13 +693,6 @@ img {
 }
 
 /* =========================================
-   Ambient Background — hidden
-   ========================================= */
-.ambient-bg {
-    display: none;
-}
-
-/* =========================================
    Process Steps Chain (سلسلة خطوات التنفيذ)
    ========================================= */
 .section-process {
@@ -818,10 +807,6 @@ img {
     border-color: rgba(255, 255, 255, 0.18);
     box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.6);
     background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-}
-
-.card-shine {
-    display: none;
 }
 
 .card-top {

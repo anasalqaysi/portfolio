@@ -5,11 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Anas Developer - مطور ومخطط حلول رقمية | تصميم وتطوير أنظمة ويب احترافية">
+    <meta name="theme-color" content="#0c0c0c">
     <title>Anas Developer | حلول وأنظمة رقمية</title>
     <!-- Favicon / Website Logo -->
-    <link rel="icon" type="image/svg+xml" href="logo2.svg">
-    <link rel="alternate icon" href="logo2.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="logo2.svg">
+    <link rel="icon" type="image/svg+xml" href="assets/brand/site-logo.svg">
+    <link rel="alternate icon" href="assets/brand/site-logo.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="assets/brand/site-logo.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap"
@@ -19,7 +20,12 @@
     <link rel="stylesheet" href="style.css">
     <script>
         (function () {
-            const savedTheme = localStorage.getItem('theme');
+            let savedTheme = null;
+            try {
+                savedTheme = localStorage.getItem('theme');
+            } catch {
+                // Continue with the default theme when storage is unavailable.
+            }
             if (savedTheme === 'light') {
                 document.documentElement.setAttribute('data-theme', 'light');
             } else {
@@ -38,7 +44,7 @@
         <div class="container">
             <div class="nav-content">
                 <a href="#" class="logo">
-                    <img src="logo2.svg" alt="Anas Developer" class="logo-img">
+                    <img src="assets/brand/site-logo.svg" alt="Anas Developer" class="logo-img">
                     <span>Anas Developer</span>
                 </a>
                 <nav class="nav-desktop">
@@ -69,7 +75,7 @@
                     <a href="#contact" class="btn btn-nav">ابدأ مشروعك</a>
 
                     <!-- Mobile Menu Toggle -->
-                    <button class="menu-toggle" id="menuToggle" aria-label="القائمة">
+                    <button class="menu-toggle" id="menuToggle" type="button" aria-label="القائمة" aria-expanded="false" aria-controls="mobileMenu">
                         <span class="hamburger">
                             <span></span>
                             <span></span>
@@ -361,17 +367,17 @@
                         <div class="project-image">
                             <div class="swiper project-swiper" id="swiper-sijilli">
                                 <div class="swiper-wrapper">
-                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-main.png"
+                                    <div class="swiper-slide"><img src="assets/projects/sijilli/main.png"
                                             alt="منصة سجلي للخدمات الإلكترونية" loading="eager"></div>
-                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-1.png"
+                                    <div class="swiper-slide"><img src="assets/projects/sijilli/screenshot-01.png"
                                             alt="منصة سجلي" loading="lazy"></div>
-                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-2.png"
+                                    <div class="swiper-slide"><img src="assets/projects/sijilli/screenshot-02.png"
                                             alt="منصة سجلي" loading="lazy"></div>
-                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-3.png"
+                                    <div class="swiper-slide"><img src="assets/projects/sijilli/screenshot-03.png"
                                             alt="منصة سجلي" loading="lazy"></div>
-                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-4.png"
+                                    <div class="swiper-slide"><img src="assets/projects/sijilli/screenshot-04.png"
                                             alt="منصة سجلي" loading="lazy"></div>
-                                    <div class="swiper-slide"><img src="projects/sijilli/sijilli-img-5.png"
+                                    <div class="swiper-slide"><img src="assets/projects/sijilli/screenshot-05.png"
                                             alt="منصة سجلي" loading="lazy"></div>
                                 </div>
                                 <div class="swiper-pagination"></div>
@@ -396,7 +402,7 @@
                                 <span class="tech-pill">Firebase</span>
                             </div>
                             <div class="project-actions">
-                                <a href="https://www.sajalni.app" class="btn btn-primary btn-sm" target="_blank">
+                                <a href="https://www.sajalni.app" class="btn btn-primary btn-sm" target="_blank" rel="noopener noreferrer">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
@@ -455,14 +461,14 @@
             <div class="footer-content">
                 <div class="footer-logo">
                     <a href="#" class="logo">
-                        <img src="logo2.svg" alt="Anas Developer" class="logo-img">
+                        <img src="assets/brand/site-logo.svg" alt="Anas Developer" class="logo-img">
                         <span>Anas Developer</span>
                     </a>
                     <button type="button" class="footer-cert-btn" id="openCertBtn" title="وثيقة ممارس حر معتمدة - العمل الحر" aria-label="عرض وثيقة العمل الحر المعتمدة">
-                        <img src="ANAS.svg" alt="شعار منصة العمل الحر" class="footer-cert-img" width="32" height="32">
+                        <img src="assets/certificates/freelance-platform-logo.svg" alt="شعار منصة العمل الحر" class="footer-cert-img" width="32" height="32">
                     </button>
                     <button type="button" class="footer-cert-btn" id="openBusinessCertBtn" title="شهادة توثيق التجارة الإلكترونية - المركز السعودي للأعمال" aria-label="عرض شهادة المركز السعودي للأعمال المعتمدة">
-                        <img src="saudi-business-center-logo.png" alt="شعار المركز السعودي للأعمال" class="footer-cert-img" width="32" height="32">
+                        <img src="assets/certificates/saudi-business-center-logo.png" alt="شعار المركز السعودي للأعمال" class="footer-cert-img" width="32" height="32">
                     </button>
                 </div>
                 <p class="footer-text">&copy; 2026 Anas Developer. جميع الحقوق محفوظة.</p>
@@ -482,7 +488,7 @@
             <div class="cert-modal-header">
                 <div class="cert-header-info">
                     <div class="cert-header-logo">
-                        <img src="ANAS.svg" alt="شعار منصة العمل الحر">
+                        <img src="assets/certificates/freelance-platform-logo.svg" alt="شعار منصة العمل الحر">
                     </div>
                     <div>
                         <h3 class="cert-title">منصة العمل الحر</h3>
@@ -499,14 +505,14 @@
 
             <div class="cert-modal-body">
                 <div class="cert-document-wrapper">
-                    <img src="freelance-certificate.png" alt="وثيقة ممارس حر معتمدة - أنس يحيى جبران القيسي" class="cert-document-img">
+                    <img src="assets/certificates/freelance-certificate-preview.png" alt="وثيقة ممارس حر معتمدة - أنس يحيى جبران القيسي" class="cert-document-img">
                 </div>
                 <div class="cert-modal-bottom">
                     <p class="cert-status-text">
                         <span>وثيقة سارية وموثقة رسمياً:</span>
                         <strong>FL-525740581</strong>
                     </p>
-                    <a href="freelance-certificate.pdf" target="_blank" download="وثيقة-العمل-الحر-أنس-القيسي.pdf" class="cert-pdf-link" rel="noopener noreferrer">
+                    <a href="assets/certificates/freelance-certificate.pdf" target="_blank" download="وثيقة-العمل-الحر-أنس-القيسي.pdf" class="cert-pdf-link" rel="noopener noreferrer">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                             <polyline points="7 10 12 15 17 10"></polyline>
@@ -525,7 +531,7 @@
             <div class="cert-modal-header">
                 <div class="cert-header-info">
                     <div class="cert-header-logo">
-                        <img src="saudi-business-center-logo.png" alt="شعار المركز السعودي للأعمال">
+                        <img src="assets/certificates/saudi-business-center-logo.png" alt="شعار المركز السعودي للأعمال">
                     </div>
                     <div>
                         <h3 class="cert-title">المركز السعودي للأعمال</h3>
@@ -542,14 +548,14 @@
 
             <div class="cert-modal-body">
                 <div class="cert-document-wrapper">
-                    <img src="business-center-certificate.png" alt="شهادة توثيق التجارة الإلكترونية - المركز السعودي للأعمال - أنس لتطوير البرمجيات" class="cert-document-img">
+                    <img src="assets/certificates/saudi-business-center-certificate-preview.png" alt="شهادة توثيق التجارة الإلكترونية - المركز السعودي للأعمال - أنس لتطوير البرمجيات" class="cert-document-img">
                 </div>
                 <div class="cert-modal-bottom">
                     <p class="cert-status-text">
                         <span>شهادة سارية وموثقة رسمياً:</span>
                         <strong>0000331044</strong>
                     </p>
-                    <a href="المركز السعودي للاعمال.pdf" target="_blank" download="شهادة-توثيق-المركز-السعودي-للأعمال-أنس-القيسي.pdf" class="cert-pdf-link" rel="noopener noreferrer">
+                    <a href="assets/certificates/saudi-business-center-certificate.pdf" target="_blank" download="شهادة-توثيق-المركز-السعودي-للأعمال-أنس-القيسي.pdf" class="cert-pdf-link" rel="noopener noreferrer">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                             <polyline points="7 10 12 15 17 10"></polyline>
@@ -563,280 +569,8 @@
     </div>
 
     <!-- Swiper JS -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
-    <script>
-        // =============================================
-        // Swiper Initialization
-        // =============================================
-        const swiper = new Swiper('.project-swiper', {
-            loop: true,
-            initialSlide: 0,
-            effect: 'fade',
-            fadeEffect: { crossFade: true },
-            autoplay: false, // متوقف تلقائياً لتظل صورة الواجهة الرئيسية ثابتة عند دخول الموقع
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-        });
-
-        // =============================================
-        // Mobile Menu
-        // =============================================
-        const menuToggle = document.getElementById('menuToggle');
-        const mobileMenu = document.getElementById('mobileMenu');
-        const mobileLinks = document.querySelectorAll('.mobile-link');
-
-        menuToggle.addEventListener('click', () => {
-            menuToggle.classList.toggle('active');
-            mobileMenu.classList.toggle('active');
-            document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
-        });
-
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                menuToggle.classList.remove('active');
-                mobileMenu.classList.remove('active');
-                document.body.style.overflow = '';
-            });
-        });
-
-        // =============================================
-        // Navbar Scroll Effect
-        // =============================================
-        const navbar = document.getElementById('navbar');
-        let lastScroll = 0;
-
-        window.addEventListener('scroll', () => {
-            const currentScroll = window.scrollY;
-
-            if (currentScroll > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-
-            lastScroll = currentScroll;
-        });
-
-        // =============================================
-        // Scroll Reveal Animations
-        // =============================================
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -40px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('revealed');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.expertise-card, .project-card, .contact-form, .section-header, .step-card, .footer-freelance').forEach(el => {
-            el.classList.add('reveal');
-            observer.observe(el);
-        });
-
-        // =============================================
-        // Form Submit Handler (Real Email Service)
-        // =============================================
-        document.getElementById('contactForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('.btn-submit');
-            const name = document.getElementById('name').value;
-            const phone = document.getElementById('phone').value;
-            const message = document.getElementById('msg').value;
-
-            btn.disabled = true;
-            btn.innerHTML = '<span>جاري الإرسال...</span>';
-
-            try {
-                const response = await fetch('https://formsubmit.co/ajax/ca5739aa2f14d0de06a690aa6c86d82d', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        _subject: `طلب تواصل جديد من: ${name} (${phone})`,
-                        الاسم: name,
-                        الجوال: phone,
-                        الرسالة: message
-                    })
-                });
-
-                if (response.ok) {
-                    btn.innerHTML = '<span>✓ تم الإرسال بنجاح</span>';
-                    btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-                    e.target.reset();
-                } else {
-                    throw new Error('فشل الإرسال عبر الخدمة السحابية');
-                }
-            } catch (err) {
-                // Fallback to direct mailto if fetch encounters issue
-                window.location.href = `mailto:contact@anasalqaysi.tech?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent("الاسم: " + name + "\nالجوال: " + phone + "\nالبريد: " + email + "\n\n" + message)}`;
-                btn.innerHTML = '<span>✓ فتح تطبيق البريد الإلكتروني</span>';
-            } finally {
-                setTimeout(() => {
-                    btn.disabled = false;
-                    btn.innerHTML = '<span>إرسال الرسالة</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>';
-                    btn.style.background = '';
-                }, 4500);
-            }
-        });
-
-
-
-        // =============================================
-        // Typewriter Animation for Code Showcase Window
-        // =============================================
-        const codeTokens = [
-            { text: 'interface', class: 'code-keyword' },
-            { text: ' ' },
-            { text: 'ProjectProps', class: 'code-def' },
-            { text: ' {\n  ' },
-            { text: 'client', class: 'code-prop' },
-            { text: ': ' },
-            { text: 'string', class: 'code-type' },
-            { text: ';\n  ' },
-            { text: 'type', class: 'code-prop' },
-            { text: ': ' },
-            { text: "'Portfolio'", class: 'code-string' },
-            { text: ' | ' },
-            { text: "'Business Profile'", class: 'code-string' },
-            { text: ' | ' },
-            { text: "'Digital Menu'", class: 'code-string' },
-            { text: ';\n}\n\n' },
-            { text: 'export function', class: 'code-keyword' },
-            { text: ' ' },
-            { text: 'CreateWebsite', class: 'code-def' },
-            { text: '({ ' },
-            { text: 'client', class: 'code-prop' },
-            { text: ', ' },
-            { text: 'type', class: 'code-prop' },
-            { text: ' }: ' },
-            { text: 'ProjectProps', class: 'code-type' },
-            { text: ') {\n  ' },
-            { text: 'return', class: 'code-keyword' },
-            { text: ' (\n    <' },
-            { text: 'Project', class: 'code-def' },
-            { text: ' ' },
-            { text: 'performance', class: 'code-prop' },
-            { text: '=' },
-            { text: '"100%"', class: 'code-string' },
-            { text: ' ' },
-            { text: 'readyToLaunch', class: 'code-prop' },
-            { text: '={' },
-            { text: 'true', class: 'code-keyword' },
-            { text: '}>\n      <' },
-            { text: 'DeliverSuccess', class: 'code-def' },
-            { text: ' ' },
-            { text: 'to', class: 'code-prop' },
-            { text: '={' },
-            { text: 'client', class: 'code-prop' },
-            { text: '} />\n    </' },
-            { text: 'Project', class: 'code-def' },
-            { text: '>\n  );\n}' }
-        ];
-
-        async function initCodeTyping() {
-            const container = document.getElementById('codeTyping');
-            if (!container) return;
-
-            container.innerHTML = '';
-            const cursor = document.createElement('span');
-            cursor.className = 'code-cursor';
-            container.appendChild(cursor);
-
-            const speed = 22; // ms delay per character
-
-            for (const token of codeTokens) {
-                let elem;
-                if (token.class) {
-                    elem = document.createElement('span');
-                    elem.className = token.class;
-                } else {
-                    elem = document.createTextNode('');
-                }
-                container.insertBefore(elem, cursor);
-
-                for (let i = 0; i < token.text.length; i++) {
-                    const char = token.text[i];
-                    if (elem.nodeType === 3) {
-                        elem.nodeValue += char;
-                    } else {
-                        elem.textContent += char;
-                    }
-                    await new Promise(resolve => setTimeout(resolve, speed));
-                }
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', initCodeTyping);
-
-        // =============================================
-        // Certificate Modals Logic (منصة العمل الحر & المركز السعودي للأعمال)
-        // =============================================
-        function initCertModal(openBtnId, closeBtnId, modalId) {
-            const openBtn = document.getElementById(openBtnId);
-            const closeBtn = document.getElementById(closeBtnId);
-            const modal = document.getElementById(modalId);
-            if (!modal) return;
-
-            function openModal() {
-                modal.classList.add('is-open');
-                modal.setAttribute('aria-hidden', 'false');
-                document.body.style.overflow = 'hidden';
-            }
-
-            function closeModal() {
-                modal.classList.remove('is-open');
-                modal.setAttribute('aria-hidden', 'true');
-                if (!document.querySelector('.cert-modal-backdrop.is-open')) {
-                    document.body.style.overflow = '';
-                }
-            }
-
-            if (openBtn) openBtn.addEventListener('click', openModal);
-            if (closeBtn) closeBtn.addEventListener('click', closeModal);
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) closeModal();
-            });
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && modal.classList.contains('is-open')) {
-                    closeModal();
-                }
-            });
-        }
-
-        initCertModal('openCertBtn', 'closeCertBtn', 'certModal');
-        initCertModal('openBusinessCertBtn', 'closeBusinessCertBtn', 'businessCertModal');
-
-        // =============================================
-        // Theme Switcher (Dark / Light Mode)
-        // =============================================
-        const themeToggle = document.getElementById('themeToggle');
-
-        function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-        }
-
-        if (themeToggle) {
-            themeToggle.addEventListener('click', toggleTheme);
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+    <script src="app.js" defer></script>
 </body>
 
 </html>
