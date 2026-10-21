@@ -40,10 +40,11 @@ import {
   Layers,
   CheckCircle2,
   Key,
+  RotateCcw,
 } from 'lucide-react';
 import { BRAND } from './constants/brand';
 
-const STORAGE_KEY = 'DEVELOPER_COMMAND_CENTER_STATE_V1';
+const STORAGE_KEY = 'DEVELOPER_COMMAND_CENTER_STATE_V2';
 
 type ActiveTab =
   | 'overview'
@@ -246,6 +247,40 @@ export default function App() {
     }
     setClientLoggedInProject(null);
     setCurrentUser(null);
+  };
+
+  // Reset Workspace handler (Keep only official Sajalni platform)
+  const handleResetWorkspace = async () => {
+    const confirmed = window.confirm(
+      'هل أنت متأكد من تصفير المرصد بالكامل؟\nسيتم حذف جميع الأفكار وجهات التواصل والمشاريع التجريبية، والإبقاء فقط على منصة "سجلي" الحقيقية ومزامنة ذلك فوراً مع قاعدة البيانات السحابية.'
+    );
+    if (!confirmed) return;
+
+    const freshData = normalizeWorkspaceData(INITIAL_WORKSPACE_DATA);
+    setData(freshData);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(freshData));
+    } catch {
+      // Ignore
+    }
+
+    if (currentUser && isUserAdmin(currentUser)) {
+      try {
+        await setDoc(doc(db, 'developer_workspace', 'main'), freshData);
+        const batch = writeBatch(db);
+        for (const pin of syncedPinsRef.current) {
+          batch.delete(doc(db, 'client_portal_access', pin));
+        }
+        await batch.commit();
+        syncedPinsRef.current.clear();
+        alert('تم تصفير المرصد بالكامل بنجاح، وتثبيت منصة "سجلي" الحقيقية.');
+      } catch (err) {
+        console.error('Error resetting cloud workspace:', err);
+        alert('تم التصفير محلياً، وحدث خطأ في المزامنة السحابية: ' + (err as Error).message);
+      }
+    } else {
+      alert('تم التصفير محلياً بنجاح.');
+    }
   };
 
   // Handlers for Ideas
@@ -472,6 +507,16 @@ export default function App() {
               {currentUser.email}
             </span>
           </div>
+
+          <button
+            type="button"
+            onClick={handleResetWorkspace}
+            className="flex items-center gap-1.5 py-1.5 px-3 rounded-lg bg-red-950/40 hover:bg-red-900/60 border border-red-800/40 text-xs text-red-300 hover:text-white transition-colors cursor-pointer"
+            title="تصفير المرصد وحفظ منصة سجلي فقط"
+          >
+            <RotateCcw className="w-3.5 h-3.5 text-red-400" />
+            <span className="hidden sm:inline">تصفير المرصد</span>
+          </button>
 
           <button
             type="button"
