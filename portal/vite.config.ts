@@ -255,6 +255,7 @@ function portfolioBackendPlugin(): Plugin {
 
 export default defineConfig(() => {
   return {
+    base: '/portal/',
     plugins: [react(), tailwindcss(), portfolioBackendPlugin()],
     resolve: {
       alias: {

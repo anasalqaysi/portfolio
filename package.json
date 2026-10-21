@@ -1,0 +1,10 @@
+{
+  "name": "anas-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "الموقع الشخصي وبوابة المبرمج الرسمية للمهندس أنس القيسي",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs"
+  }
+}
