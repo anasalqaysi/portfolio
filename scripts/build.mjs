@@ -8,7 +8,11 @@ const rootDir = path.resolve(__dirname, '..');
 const portalDir = path.join(rootDir, 'portal');
 const distDir = path.join(rootDir, 'dist');
 
-console.log('🚀 [1/3] Building portal React/Vite app...');
+console.log('🚀 [1/3] Preparing portal and building Vite bundle...');
+if (!fs.existsSync(path.join(portalDir, 'node_modules'))) {
+  console.log('Installing portal dependencies...');
+  execSync('npm --prefix portal install', { cwd: rootDir, stdio: 'inherit' });
+}
 execSync('npm --prefix portal run build', { cwd: rootDir, stdio: 'inherit' });
 
 console.log('📁 [2/3] Assembling unified distribution folder...');
