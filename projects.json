@@ -1,0 +1,29 @@
+[
+  {
+    "id": "proj-sijilli",
+    "title": "منصة سجلي للخدمات الإلكترونية",
+    "category": "platforms",
+    "categoryLabel": "منصات",
+    "badge": "مشروع مميز",
+    "description": "منصة متكاملة لتقديم وتسهيل الخدمات الإلكترونية (مثل الضمان المطور)، مزودة بلوحة تحكم إدارية شاملة لإدارة الطلبات، تخصيص الأسعار، ومتابعة حالة العملاء بشكل فوري.",
+    "techStack": [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "Tailwind CSS",
+      "Firebase"
+    ],
+    "demoUrl": "https://www.sajalni.app",
+    "imageUrl": "assets/projects/sijilli/main.png",
+    "images": [
+      "assets/projects/sijilli/main.png",
+      "assets/projects/sijilli/screenshot-01.png",
+      "assets/projects/sijilli/screenshot-02.png",
+      "assets/projects/sijilli/screenshot-03.png",
+      "assets/projects/sijilli/screenshot-04.png",
+      "assets/projects/sijilli/screenshot-05.png"
+    ],
+    "showOnHome": true,
+    "order": 1
+  }
+]

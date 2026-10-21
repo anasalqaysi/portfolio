@@ -1,0 +1,6 @@
+[
+  { "id": "clients", "label": "مشاريع عملاء", "defaultBadge": "مشروع عميل معتمد" },
+  { "id": "websites", "label": "مواقع إلكترونية", "defaultBadge": "موقع معتمد" },
+  { "id": "apps", "label": "تطبيقات", "defaultBadge": "تطبيق تكاملي" },
+  { "id": "platforms", "label": "منصات", "defaultBadge": "منصة حية 🚀" }
+]

@@ -1,0 +1,275 @@
+import type {
+  IdeaItem,
+  OutreachContact,
+  ClientProject,
+  PersonalPlatform,
+  DeveloperWorkspaceData,
+  OutreachStage,
+  IdeaStatus,
+  ClientProjectStatus,
+} from '../types';
+
+export interface IdeaValidationMetrics {
+  totalContacted: number;
+  repliedCount: number;
+  interviewedCount: number;
+  potentialClientCount: number;
+  convertedCount: number;
+  notInterestedCount: number;
+  willingToPayCount: number;
+  responseRatePercent: number;
+  positiveSignalPercent: number;
+  validationProgressPercent: number;
+}
+
+export function calculateIdeaMetrics(
+  idea: IdeaItem,
+  allContacts: OutreachContact[]
+): IdeaValidationMetrics {
+  const ideaContacts = allContacts.filter((c) => c.ideaId === idea.id);
+  const totalContacted = ideaContacts.length;
+
+  const repliedCount = ideaContacts.filter(
+    (c) => c.stage !== 'contacted'
+  ).length;
+  const interviewedCount = ideaContacts.filter(
+    (c) => c.stage === 'interviewed'
+  ).length;
+  const potentialClientCount = ideaContacts.filter(
+    (c) => c.stage === 'potential_client'
+  ).length;
+  const convertedCount = ideaContacts.filter(
+    (c) => c.stage === 'converted_user'
+  ).length;
+  const notInterestedCount = ideaContacts.filter(
+    (c) => c.stage === 'not_interested'
+  ).length;
+  const willingToPayCount = ideaContacts.filter((c) => c.willingToPay).length;
+
+  const responseRatePercent =
+    totalContacted > 0 ? Math.round((repliedCount / totalContacted) * 100) : 0;
+
+  const positiveSignals =
+    interviewedCount + potentialClientCount + convertedCount;
+  const positiveSignalPercent =
+    totalContacted > 0
+      ? Math.round((positiveSignals / totalContacted) * 100)
+      : 0;
+
+  const target = Math.max(1, idea.targetValidationCount || 10);
+  const validationProgressPercent = Math.min(
+    100,
+    Math.round((totalContacted / target) * 100)
+  );
+
+  return {
+    totalContacted,
+    repliedCount,
+    interviewedCount,
+    potentialClientCount,
+    convertedCount,
+    notInterestedCount,
+    willingToPayCount,
+    responseRatePercent,
+    positiveSignalPercent,
+    validationProgressPercent,
+  };
+}
+
+export interface WorkspaceSummaryMetrics {
+  totalIdeas: number;
+  activeExecutionIdeas: number;
+  validatedIdeasCount: number;
+  totalContacts: number;
+  totalReplied: number;
+  totalPotentialClients: number;
+  overallResponseRate: number;
+  totalClientContractValue: number;
+  totalClientPaid: number;
+  totalClientRemaining: number;
+  activeClientProjectsCount: number;
+  totalMonthlyPlatformRevenue: number;
+  totalMonthlyPlatformCosts: number;
+  netMonthlyPlatformProfit: number;
+}
+
+export function calculateWorkspaceSummary(
+  data: DeveloperWorkspaceData
+): WorkspaceSummaryMetrics {
+  const totalIdeas = data.ideas.length;
+  const activeExecutionIdeas = data.ideas.filter(
+    (i) =>
+      i.status === 'building_mvp' ||
+      i.status === 'in_execution' ||
+      i.status === 'launched'
+  ).length;
+  const validatedIdeasCount = data.ideas.filter(
+    (i) => i.validatedBeforeStart
+  ).length;
+
+  const totalContacts = data.contacts.length;
+  const totalReplied = data.contacts.filter(
+    (c) => c.stage !== 'contacted'
+  ).length;
+  const totalPotentialClients = data.contacts.filter(
+    (c) => c.stage === 'potential_client' || c.stage === 'converted_user'
+  ).length;
+  const overallResponseRate =
+    totalContacts > 0 ? Math.round((totalReplied / totalContacts) * 100) : 0;
+
+  const totalClientContractValue = data.clientProjects.reduce(
+    (sum, p) => sum + (Number(p.totalBudget) || 0),
+    0
+  );
+  const totalClientPaid = data.clientProjects.reduce(
+    (sum, p) => sum + (Number(p.paidAmount) || 0),
+    0
+  );
+  const totalClientRemaining = Math.max(
+    0,
+    totalClientContractValue - totalClientPaid
+  );
+  const activeClientProjectsCount = data.clientProjects.filter(
+    (p) =>
+      p.status === 'in_progress' ||
+      p.status === 'client_review' ||
+      p.status === 'contract_signed'
+  ).length;
+
+  const totalMonthlyPlatformRevenue = data.platforms.reduce(
+    (sum, pl) => sum + (Number(pl.monthlyRevenue) || 0),
+    0
+  );
+  const totalMonthlyPlatformCosts = data.platforms.reduce(
+    (sum, pl) =>
+      sum +
+      (Number(pl.monthlyServerCost) || 0) +
+      Math.round((Number(pl.annualDomainCost) || 0) / 12),
+    0
+  );
+  const netMonthlyPlatformProfit =
+    totalMonthlyPlatformRevenue - totalMonthlyPlatformCosts;
+
+  return {
+    totalIdeas,
+    activeExecutionIdeas,
+    validatedIdeasCount,
+    totalContacts,
+    totalReplied,
+    totalPotentialClients,
+    overallResponseRate,
+    totalClientContractValue,
+    totalClientPaid,
+    totalClientRemaining,
+    activeClientProjectsCount,
+    totalMonthlyPlatformRevenue,
+    totalMonthlyPlatformCosts,
+    netMonthlyPlatformProfit,
+  };
+}
+
+export function filterContacts(
+  contacts: OutreachContact[],
+  options: {
+    searchQuery?: string;
+    ideaId?: string;
+    stage?: OutreachStage | 'all';
+    channel?: string;
+  }
+): OutreachContact[] {
+  const q = (options.searchQuery || '').trim().toLowerCase();
+  return contacts.filter((c) => {
+    if (options.ideaId && options.ideaId !== 'all' && c.ideaId !== options.ideaId) {
+      return false;
+    }
+    if (options.stage && options.stage !== 'all' && c.stage !== options.stage) {
+      return false;
+    }
+    if (options.channel && options.channel !== 'all') {
+      if (options.channel === 'phone' && !c.channels.phone && !c.channels.whatsapp) {
+        return false;
+      }
+      if (options.channel === 'x' && !c.channels.xHandle) {
+        return false;
+      }
+      if (options.channel === 'tiktok' && !c.channels.tiktokHandle) {
+        return false;
+      }
+      if (options.channel === 'linkedin' && !c.channels.linkedinUrl) {
+        return false;
+      }
+      if (options.channel === 'telegram' && !c.channels.telegramHandle) {
+        return false;
+      }
+    }
+    if (!q) return true;
+    const haystack = [
+      c.name,
+      c.roleOrPersona,
+      c.feedbackSummary,
+      c.channels.phone,
+      c.channels.whatsapp,
+      c.channels.xHandle,
+      c.channels.tiktokHandle,
+      c.channels.email,
+      c.channels.telegramHandle,
+      c.channels.otherChannel,
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase();
+    return haystack.includes(q);
+  });
+}
+
+export const IDEA_STATUS_LABELS: Record<IdeaStatus, string> = {
+  idea_stage: 'صياغة الفكرة',
+  validating: 'تحقق وتواصل مع السوق',
+  building_mvp: 'بناء النسخة الأولية MVP',
+  in_execution: 'قيد التنفيذ والتطوير',
+  launched: 'تم الإطلاق',
+  paused: 'مؤجل مؤقتاً',
+};
+
+export const OUTREACH_STAGE_LABELS: Record<OutreachStage, string> = {
+  contacted: 'تم التواصل',
+  replied: 'تم الرد',
+  interviewed: 'تم النقاش وجمع الملاحظات',
+  potential_client: 'عميل محتمل مهتم',
+  converted_user: 'عميل فعلي / مشترك مبكر',
+  not_interested: 'غير مهتم حالياً',
+};
+
+export const CLIENT_STATUS_LABELS: Record<ClientProjectStatus, string> = {
+  proposal: 'عرض سعر ودراسة',
+  contract_signed: 'تم التعاقد',
+  in_progress: 'جاري البرمجة والتنفيذ',
+  client_review: 'مراجعة العميل وتعديلات',
+  completed: 'مكتمل وتم التسليم',
+  maintenance: 'عقد صيانة وتشغيل',
+};
+
+export function formatSocialLink(
+  type: 'whatsapp' | 'x' | 'tiktok' | 'telegram',
+  value: string
+): string {
+  const clean = value.trim();
+  if (!clean) return '#';
+  if (type === 'whatsapp') {
+    const digits = clean.replace(/[^0-9]/g, '');
+    return `https://wa.me/${digits}`;
+  }
+  if (type === 'x') {
+    const handle = clean.replace(/^@/, '');
+    return `https://x.com/${handle}`;
+  }
+  if (type === 'tiktok') {
+    const handle = clean.replace(/^@/, '');
+    return `https://www.tiktok.com/@${handle}`;
+  }
+  if (type === 'telegram') {
+    const handle = clean.replace(/^@/, '');
+    return `https://t.me/${handle}`;
+  }
+  return '#';
+}

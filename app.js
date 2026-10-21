@@ -261,6 +261,315 @@ function initCertificateModal(openButtonId, closeButtonId, modalId) {
     });
 }
 
+async function initDynamicProjects() {
+    const grid = query('.projects-grid');
+    const workSection = query('#work .container');
+    if (!grid || !workSection) return;
+
+    let items = null;
+
+    // 1. Try local projects.json first (fastest & offline-ready)
+    try {
+        const localRes = await fetch('projects.json');
+        if (localRes.ok) {
+            items = await localRes.json();
+        }
+    } catch {
+        // Fall back to Firestore REST
+    }
+
+    // 2. Fall back to Firebase Firestore Public REST API
+    if (!items) {
+        try {
+            const firestoreUrl =
+                'https://firestore.googleapis.com/v1/projects/deliveryanas-app/databases/(default)/documents/portfolio_public/showcase';
+            const remoteRes = await fetch(firestoreUrl);
+            if (remoteRes.ok) {
+                const data = await remoteRes.json();
+                if (data.fields && data.fields.items && data.fields.items.arrayValue) {
+                    const rawValues = data.fields.items.arrayValue.values || [];
+                    items = rawValues.map((v) => {
+                        const m = v.mapValue?.fields || {};
+                        return {
+                            id: m.id?.stringValue || '',
+                            title: m.title?.stringValue || '',
+                            category: m.category?.stringValue || 'clients',
+                            categoryLabel: m.categoryLabel?.stringValue || 'مشروع',
+                            description: m.description?.stringValue || '',
+                            badge: m.badge?.stringValue || 'مشروع معتمد',
+                            demoUrl: m.demoUrl?.stringValue || '',
+                            imageUrl: m.imageUrl?.stringValue || '',
+                            showOnHome: m.showOnHome?.booleanValue ?? true,
+                            order: Number(m.order?.integerValue) || 1,
+                            techStack:
+                                m.techStack?.arrayValue?.values?.map((t) => t.stringValue) || [
+                                    'Full-Stack'
+                                ]
+                        };
+                    });
+                }
+            }
+        } catch {
+            // Silently fallback to static projects
+        }
+    }
+
+    if (!Array.isArray(items) || items.length === 0) return;
+
+    // Sort items by order
+    items.sort((a, b) => (a.order || 99) - (b.order || 99));
+
+    // State for viewing
+    let isShowingAll = false;
+    let activeCategory = 'all';
+
+    // Fetch dynamic categories
+    let categories = [
+        { id: 'all', label: 'الكل' }
+    ];
+
+    try {
+        const catRes = await fetch('categories.json');
+        if (catRes.ok) {
+            const catData = await catRes.json();
+            if (Array.isArray(catData) && catData.length > 0) {
+                categories = [{ id: 'all', label: 'الكل' }, ...catData];
+            }
+        }
+    } catch {
+        const seen = new Set();
+        items.forEach((it) => {
+            if (it.category && !seen.has(it.category)) {
+                seen.add(it.category);
+                categories.push({ id: it.category, label: it.categoryLabel || it.category });
+            }
+        });
+    }
+
+    // 1. Create Dynamic Filter Bar
+    let filterBar = query('.projects-filter-bar', workSection);
+    if (!filterBar) {
+        filterBar = document.createElement('div');
+        filterBar.className = 'projects-filter-bar';
+        filterBar.style.display = 'none';
+
+        filterBar.innerHTML = categories
+            .map(
+                (cat, idx) => `
+            <button type="button" class="filter-btn ${idx === 0 ? 'active' : ''}" data-cat="${cat.id}">
+                ${cat.label}
+            </button>
+        `
+            )
+            .join('');
+
+        const header = query('.section-header', workSection);
+        if (header) {
+            header.after(filterBar);
+        }
+
+        // Filter button click events
+        filterBar.querySelectorAll('.filter-btn').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                filterBar.querySelectorAll('.filter-btn').forEach((b) => b.classList.remove('active'));
+                btn.classList.add('active');
+                activeCategory = btn.getAttribute('data-cat') || 'all';
+                renderCards();
+            });
+        });
+    }
+
+    // 2. Render Cards function with Zigzag alternating layout
+    function renderCards() {
+        grid.replaceChildren();
+
+        // Filter by showOnHome and category
+        let visibleItems = items;
+        if (!isShowingAll) {
+            visibleItems = items.filter((p) => p.showOnHome).slice(0, 4);
+            if (visibleItems.length === 0) {
+                visibleItems = items.slice(0, 4);
+            }
+        } else if (activeCategory !== 'all') {
+            visibleItems = items.filter((p) => p.category === activeCategory);
+        }
+
+        visibleItems.forEach((item, index) => {
+            const card = document.createElement('div');
+            // Alternating Zigzag: even index normal (Image Right in RTL), odd index reverse (Image Left)
+            const isReverse = index % 2 === 1;
+            card.className = `project-card reveal revealed ${isReverse ? 'project-reverse' : ''}`;
+            card.setAttribute('data-project-id', item.id);
+
+            const techPills = (item.techStack || [])
+                .map((t) => `<span class="tech-pill">${t}</span>`)
+                .join('');
+
+            const actionBtn = item.demoUrl
+                ? `<div class="project-actions">
+                    <a href="${item.demoUrl}" class="btn btn-primary btn-sm" target="_blank" rel="noopener noreferrer">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                        معاينة حية
+                    </a>
+                   </div>`
+                : '';
+
+            // Render Image Column: multi-image swiper, single image, or precision mockup
+            const imagesList = Array.isArray(item.images) && item.images.length > 0
+                ? item.images
+                : (item.imageUrl ? [item.imageUrl] : []);
+
+            let imageColumnHtml = '';
+            if (imagesList.length > 1) {
+                const swiperId = `swiper-${item.id.replace(/[^a-zA-Z0-9_-]/g, '_')}`;
+                imageColumnHtml = `
+                    <div class="project-image">
+                        <div class="swiper project-swiper" id="${swiperId}">
+                            <div class="swiper-wrapper">
+                                ${imagesList.map((img, i) => `
+                                    <div class="swiper-slide">
+                                        <img src="${img}" alt="${item.title} - ${i + 1}" loading="${i === 0 ? 'eager' : 'lazy'}">
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="swiper-pagination"></div>
+                            <div class="swiper-button-prev"></div>
+                            <div class="swiper-button-next"></div>
+                        </div>
+                        <div class="project-badge">${item.badge || item.categoryLabel || 'مشروع معتمد'}</div>
+                    </div>
+                `;
+            } else if (imagesList.length === 1) {
+                imageColumnHtml = `
+                    <div class="project-image">
+                        <img src="${imagesList[0]}" alt="${item.title}" loading="lazy">
+                        <div class="project-badge">${item.badge || item.categoryLabel || 'مشروع معتمد'}</div>
+                    </div>
+                `;
+            } else {
+                let domainText = 'system.live';
+                try {
+                    if (item.demoUrl) domainText = new URL(item.demoUrl).hostname.replace(/^www\./, '');
+                } catch {
+                    domainText = 'demo.online';
+                }
+
+                imageColumnHtml = `
+                    <div class="project-image">
+                        <div class="project-mockup-frame">
+                            <div class="mockup-window">
+                                <div class="mockup-header">
+                                    <div class="mockup-dots">
+                                        <span class="mockup-dot"></span>
+                                        <span class="mockup-dot"></span>
+                                        <span class="mockup-dot"></span>
+                                    </div>
+                                    <span class="mockup-domain">${domainText}</span>
+                                </div>
+                                <div class="mockup-body">
+                                    <div class="mockup-logo-badge">AD</div>
+                                    <h4>${item.title}</h4>
+                                    <p>${item.categoryLabel || 'نظام رقمي تفاعلي متكامل'}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="project-badge">${item.badge || item.categoryLabel || 'مشروع معتمد'}</div>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                ${imageColumnHtml}
+                <div class="project-content">
+                    <div>
+                        <h3 class="project-title">${item.title}</h3>
+                        <p class="project-desc">${item.description}</p>
+                    </div>
+                    <div class="tech-stack">${techPills}</div>
+                    ${actionBtn}
+                </div>
+            `;
+
+            grid.appendChild(card);
+        });
+
+        // Initialize Swipers for all multi-image cards
+        if (typeof Swiper !== 'undefined') {
+            visibleItems.forEach((item) => {
+                const imagesList = Array.isArray(item.images) && item.images.length > 0
+                    ? item.images
+                    : (item.imageUrl ? [item.imageUrl] : []);
+                if (imagesList.length > 1) {
+                    const swiperId = `#swiper-${item.id.replace(/[^a-zA-Z0-9_-]/g, '_')}`;
+                    const el = query(swiperId, grid);
+                    if (el && !el.swiper) {
+                        new Swiper(el, {
+                            loop: true,
+                            speed: 550,
+                            autoplay: {
+                                delay: 3500,
+                                disableOnInteraction: false,
+                            },
+                            pagination: {
+                                el: query('.swiper-pagination', el),
+                                clickable: true,
+                            },
+                            navigation: {
+                                nextEl: query('.swiper-button-next', el),
+                                prevEl: query('.swiper-button-prev', el),
+                            },
+                        });
+                    }
+                }
+            });
+        }
+
+        // Update toggle button text if exists
+        const toggleBtn = query('#toggleProjectsBtn');
+        if (toggleBtn) {
+            toggleBtn.innerHTML = isShowingAll
+                ? '<span>عرض المشاريع الرئيسية فقط ▴</span>'
+                : `<span>عرض كافة المشاريع والمنصات (${items.length}) ▾</span>`;
+        }
+    }
+
+    // 3. Add Show All Button at bottom of work section
+    let showMoreWrapper = query('.show-more-projects-wrapper', workSection);
+    if (!showMoreWrapper && items.length > 4) {
+        showMoreWrapper = document.createElement('div');
+        showMoreWrapper.className = 'show-more-projects-wrapper';
+        showMoreWrapper.innerHTML = `
+            <button type="button" id="toggleProjectsBtn" class="btn btn-outline" style="cursor: pointer; padding: 0.75rem 2rem; font-size: 0.9rem; font-weight: 600;">
+                <span>عرض كافة المشاريع والمنصات (${items.length}) ▾</span>
+            </button>
+        `;
+        grid.after(showMoreWrapper);
+
+        const btn = query('#toggleProjectsBtn', showMoreWrapper);
+        btn?.addEventListener('click', () => {
+            isShowingAll = !isShowingAll;
+            filterBar.style.display = isShowingAll ? 'flex' : 'none';
+            if (isShowingAll) {
+                activeCategory = 'all';
+                filterBar.querySelectorAll('.filter-btn').forEach((b, idx) => {
+                    b.classList.toggle('active', idx === 0);
+                });
+            }
+            renderCards();
+            if (isShowingAll) {
+                filterBar.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        });
+    }
+
+    // Initial render of 4 projects
+    renderCards();
+}
+
 function init() {
     initTheme();
     initMobileMenu();
@@ -271,6 +580,7 @@ function init() {
     initCertificateModal('openCertBtn', 'closeCertBtn', 'certModal');
     initCertificateModal('openBusinessCertBtn', 'closeBusinessCertBtn', 'businessCertModal');
     initCodeTyping();
+    initDynamicProjects();
 }
 
 if (document.readyState === 'loading') {

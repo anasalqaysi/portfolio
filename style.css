@@ -155,8 +155,8 @@ img {
     top: 0;
     z-index: 1000;
     background: rgba(12, 12, 12, 0.7);
-    backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
     border-bottom: 1px solid transparent;
     padding: 0.9rem 0;
     transition: border-color 0.3s var(--ease), background 0.3s var(--ease);
@@ -261,6 +261,29 @@ img {
 }
 
 .theme-toggle:hover {
+    color: var(--text);
+    border-color: var(--border-hover);
+    transform: translateY(-1px);
+}
+
+.portal-icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-2);
+    transition: all 0.25s var(--ease);
+    outline: none;
+    flex-shrink: 0;
+    text-decoration: none;
+}
+
+.portal-icon-btn:hover {
     color: var(--text);
     border-color: var(--border-hover);
     transform: translateY(-1px);
@@ -898,7 +921,7 @@ img {
 .projects-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 2rem;
 }
 
 .project-card {
@@ -911,6 +934,25 @@ img {
     grid-template-columns: 1fr 1fr;
 }
 
+/* Alternating Zigzag Layout */
+@media (min-width: 900px) {
+    .project-card.project-reverse .project-image {
+        order: 2;
+    }
+    .project-card.project-reverse .project-content {
+        order: 1;
+    }
+}
+
+@media (max-width: 899px) {
+    .project-card {
+        grid-template-columns: 1fr;
+    }
+    .project-image {
+        min-height: 220px;
+    }
+}
+
 .project-featured {
     grid-column: 1 / -1;
 }
@@ -918,7 +960,135 @@ img {
 .project-card:hover {
     border-color: var(--border-hover);
     transform: translateY(-2px);
-    box-shadow: none;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* Category Filter Bar */
+.projects-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.filter-btn {
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    color: var(--text-2);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+}
+
+.filter-btn:hover {
+    color: #fff;
+    border-color: var(--border-hover);
+    background: var(--bg-hover);
+}
+
+.filter-btn.active {
+    background: #fff;
+    color: #0c0c0c;
+    border-color: #fff;
+    font-weight: 700;
+}
+
+.show-more-projects-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.5rem;
+}
+
+/* Mockup browser frame for projects without external screenshots */
+.project-mockup-frame {
+    width: 100%;
+    height: 100%;
+    min-height: 280px;
+    background: radial-gradient(circle at 50% 30%, #17171a, #0c0c0e);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
+    position: relative;
+}
+
+.mockup-window {
+    width: 100%;
+    max-width: 380px;
+    background: rgba(18, 18, 20, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+.mockup-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mockup-dots {
+    display: flex;
+    gap: 5px;
+}
+
+.mockup-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.mockup-domain {
+    font-family: var(--font-mono, monospace);
+    font-size: 10px;
+    color: var(--text-3);
+    direction: ltr;
+}
+
+.mockup-body {
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+}
+
+.mockup-logo-badge {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 800;
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+}
+
+.mockup-body h4 {
+    font-size: 0.95rem;
+    color: #fff;
+    font-weight: 700;
+}
+
+.mockup-body p {
+    font-size: 0.75rem;
+    color: var(--text-3);
 }
 
 .project-image {
@@ -1272,8 +1442,8 @@ img {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
     z-index: 9999;
     display: flex;
     align-items: center;

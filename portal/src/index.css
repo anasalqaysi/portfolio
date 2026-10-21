@@ -1,0 +1,146 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-base: #0f1015;
+    --bg-surface: #171821;
+    --bg-surface-raised: #1f202b;
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --text-primary: #f0f1f5;
+    --text-secondary: #9496a1;
+    --text-muted: #6b6d7a;
+    --font-sans: 'Tajawal', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    line-height: 1.6;
+  }
+
+  code, pre, .font-mono {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Ensure LTR elements (phones, URLs, social handles) never flip in Arabic RTL contexts */
+.dir-ltr {
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: isolate !important;
+  display: inline-block;
+}
+
+/* Subtle border transitions */
+.hairline-border {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hairline-border:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+/* =========================================================================
+   OFFICIAL A4 PRINT STYLESHEET
+   Ensures that saving as PDF or printing outputs ONLY the clean contract paper
+   with zero dashboard bleed, zero scrollbars, and zero UI clutter.
+   ========================================================================= */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 14mm 12mm 14mm 12mm;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    color: #111827 !important;
+    overflow: visible !important;
+    height: auto !important;
+    min-height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: 'Tajawal', sans-serif !important;
+  }
+
+  /* Hide all dashboard UI, navbar, tabs, action buttons */
+  header,
+  nav,
+  aside,
+  footer,
+  button,
+  .no-print,
+  .contract-modal-controls {
+    display: none !important;
+  }
+
+  /* Neutralize all fixed modal wrappers so they don't clip */
+  .fixed,
+  .fixed.inset-0 {
+    position: static !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    display: block !important;
+    backdrop-filter: none !important;
+    max-height: none !important;
+    height: auto !important;
+  }
+
+  /* Neutralize modal container */
+  .max-w-5xl {
+    max-width: 100% !important;
+    width: 100% !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .bg-\[\#14151e\],
+  .bg-\[\#1a1b26\],
+  .bg-\[\#0f1015\] {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    max-height: none !important;
+    padding: 0 !important;
+  }
+
+  /* Target the printable paper */
+  #printable-contract {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    color: #111827 !important;
+    overflow: visible !important;
+  }
+
+  /* Prevent awkward page breaks */
+  .avoid-break,
+  tr,
+  .signature-box {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
