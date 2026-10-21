@@ -1,6 +1,0 @@
-{
-  "name": "مرصد المبرمج — إدارة الأفكار والمشاريع والعملاء",
-  "description": "نظام شامل للمبرمج في ملف HTML لإدارة الأفكار الجديدة، التحقق من المستخدمين، قنوات التواصل، مشاريع العملاء، والمنصات البرمجية.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}

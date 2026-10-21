@@ -53,6 +53,7 @@ export interface IdeaItem {
   id: string;
   title: string;
   problemStatement: string;
+  solutionOutline?: string;
   targetAudience: string;
   requirements: string[];
   status: IdeaStatus;

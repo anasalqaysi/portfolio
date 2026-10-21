@@ -77,7 +77,8 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
   const clientWhatsappMsg = encodeURIComponent(
     `السلام عليكم م. أنس، بخصوص مشروعنا (${project.projectName}) لدي استفسار:`
   );
-  const whatsappUrl = `https://wa.me/966500000000?text=${clientWhatsappMsg}`;
+  const supportPhone = BRAND.phone.replace(/[^0-9]/g, '') || '966504829100';
+  const whatsappUrl = `https://wa.me/${supportPhone}?text=${clientWhatsappMsg}`;
 
   return (
     <div className="min-h-screen bg-[#09090b] text-[#f4f4f5] font-sans antialiased selection:bg-zinc-800 selection:text-white" dir="rtl">
@@ -97,9 +98,6 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
             <div>
               <div className="text-xs font-bold tracking-tight text-white flex items-center gap-2">
                 <span>بوابة تسليم ومتابعة المشاريع</span>
-                <span className="text-[10px] font-mono text-zinc-500 uppercase">
-                  · {project.id}
-                </span>
               </div>
               <p className="text-[11px] text-zinc-400">إشراف وتطوير: م. أنس القيسي</p>
             </div>
@@ -123,8 +121,8 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
           
           <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 pb-6 border-b border-zinc-850">
             <div>
-              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md text-[11px] font-medium border mb-3.5 font-mono ${statusInfo.badgeClass}">
-                <span className={`w-1.5 h-1.5 rounded-full ${statusInfo.dotClass} animate-pulse`} />
+              <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium border mb-3.5 ${statusInfo.badgeClass}`}>
+                <span className={`w-2 h-2 rounded-full ${statusInfo.dotClass}`} />
                 <span>{statusInfo.label}</span>
               </div>
 

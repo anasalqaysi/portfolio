@@ -8,13 +8,18 @@ import type { DeveloperWorkspaceData } from '../types';
  */
 export function buildStandaloneHtmlFile(data: DeveloperWorkspaceData): string {
   const safeJson = JSON.stringify(data).replace(/</g, '\\u003c');
+  const safeDevName = (data.developerName || 'المبرمج')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 
   return `<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${data.developerName} — مرصد المبرمج (ملف HTML مستقل)</title>
+  <title>${safeDevName} — مرصد المبرمج (ملف HTML مستقل)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -242,12 +247,22 @@ export function buildStandaloneHtmlFile(data: DeveloperWorkspaceData): string {
 
   <script>
     const STORAGE_KEY = 'DEV_COMMAND_CENTER_STANDALONE_V1';
+    /*__EMBEDDED_DATA_START__*/
     const EMBEDDED_DATA = ${safeJson};
+    /*__EMBEDDED_DATA_END__*/
     let state = EMBEDDED_DATA;
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) state = JSON.parse(saved);
     } catch (e) {}
+
+    function getRiyadhDate() {
+      try {
+        return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Riyadh' }).format(new Date());
+      } catch (e) {
+        return new Date().toISOString().slice(0, 10);
+      }
+    }
 
     function persist() {
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
@@ -295,7 +310,7 @@ export function buildStandaloneHtmlFile(data: DeveloperWorkspaceData): string {
         monetizationModel: document.getElementById('ideaMonetization').value.trim(),
         estimatedCost: 0,
         notes: '',
-        createdAt: new Date().toISOString().slice(0, 10)
+        createdAt: getRiyadhDate()
       });
       document.getElementById('ideaTitle').value = '';
       document.getElementById('ideaProblem').value = '';
@@ -325,7 +340,7 @@ export function buildStandaloneHtmlFile(data: DeveloperWorkspaceData): string {
         feedbackSummary: document.getElementById('cntFeedback').value.trim(),
         willingToPay: true,
         expectedPriceMonthly: 0,
-        lastContactDate: new Date().toISOString().slice(0, 10),
+        lastContactDate: getRiyadhDate(),
         nextFollowUpDate: ''
       });
       document.getElementById('cntName').value = '';
@@ -347,7 +362,7 @@ export function buildStandaloneHtmlFile(data: DeveloperWorkspaceData): string {
         status: 'in_progress',
         totalBudget: Number(document.getElementById('cpTotal').value) || 0,
         paidAmount: Number(document.getElementById('cpPaid').value) || 0,
-        startDate: new Date().toISOString().slice(0, 10),
+        startDate: getRiyadhDate(),
         deadline: '',
         repoUrl: '',
         stagingUrl: '',
@@ -363,6 +378,23 @@ export function buildStandaloneHtmlFile(data: DeveloperWorkspaceData): string {
       if (c) { c.stage = newStage; persist(); }
     }
 
+    document.addEventListener('change', function(e) {
+      if (e.target && e.target.classList.contains('contact-stage-select')) {
+        const id = e.target.getAttribute('data-contact-id');
+        if (id) updateContactStage(id, e.target.value);
+      }
+    });
+
+    function esc(s) {
+      if (s == null) return '';
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
     function renderAll() {
       const totalContacts = state.contacts.length;
       const leads = state.contacts.filter(c => c.stage === 'potential_client' || c.stage === 'converted_user').length;
@@ -372,11 +404,11 @@ export function buildStandaloneHtmlFile(data: DeveloperWorkspaceData): string {
       document.getElementById('kpiGrid').innerHTML = \`
         <div class="card"><div class="kpi-label">إجمالي الأفكار والمشاريع قيد الدراسة</div><div class="kpi-val">\${state.ideas.length}</div><div class="kpi-sub">منها \${state.ideas.filter(i => i.validatedBeforeStart).length} تم التحقق منها مع مستخدمين</div></div>
         <div class="card"><div class="kpi-label">الأشخاص الذين تم التواصل معهم</div><div class="kpi-val">\${totalContacts}</div><div class="kpi-sub">\${leads} عملاء محتملين أو مشتركين فعليين</div></div>
-        <div class="card"><div class="kpi-label">إجمالي عقود مشاريع العملاء</div><div class="kpi-val">\${totalContract.toLocaleString()} \${state.currency}</div><div class="kpi-sub">المدفوع: \${totalPaid.toLocaleString()} · المتبقي: \${(totalContract - totalPaid).toLocaleString()}</div></div>
-        <div class="card"><div class="kpi-label">المنصات الخاصة (SaaS)</div><div class="kpi-val">\${state.platforms.length}</div><div class="kpi-sub">إيراد شهري: \${state.platforms.reduce((s, p) => s + (Number(p.monthlyRevenue)||0), 0).toLocaleString()} \${state.currency}</div></div>
+        <div class="card"><div class="kpi-label">إجمالي عقود مشاريع العملاء</div><div class="kpi-val">\${totalContract.toLocaleString()} \${esc(state.currency)}</div><div class="kpi-sub">المدفوع: \${totalPaid.toLocaleString()} · المتبقي: \${(totalContract - totalPaid).toLocaleString()}</div></div>
+        <div class="card"><div class="kpi-label">المنصات الخاصة (SaaS)</div><div class="kpi-val">\${state.platforms.length}</div><div class="kpi-sub">إيراد شهري: \${state.platforms.reduce((s, p) => s + (Number(p.monthlyRevenue)||0), 0).toLocaleString()} \${esc(state.currency)}</div></div>
       \`;
 
-      const ideaOpts = state.ideas.map(i => \`<option value="\${i.id}">\${i.title}</option>\`).join('');
+      const ideaOpts = state.ideas.map(i => \`<option value="\${esc(i.id)}">\${esc(i.title)}</option>\`).join('');
       document.getElementById('cntIdea').innerHTML = ideaOpts;
 
       document.getElementById('ideasList').innerHTML = state.ideas.map(idea => {
@@ -385,15 +417,15 @@ export function buildStandaloneHtmlFile(data: DeveloperWorkspaceData): string {
         const potential = linked.filter(c => c.stage === 'potential_client' || c.stage === 'converted_user').length;
         return \`
           <div class="card">
-            <h3>\${idea.title}</h3>
+            <h3>\${esc(idea.title)}</h3>
             <div class="meta-line">
-              الوضع الحالي: <strong>\${STATUS_MAP[idea.status] || idea.status}</strong> ·
+              الوضع الحالي: <strong>\${esc(STATUS_MAP[idea.status] || idea.status)}</strong> ·
               التحقق قبل البدء: <strong>\${idea.validatedBeforeStart ? 'نعم تم التواصل' : 'لم يتم بعد'}</strong> ·
               تم التواصل مع: <strong>\${linked.length} أشخاص</strong> (تم الرد: \${replied} · عملاء محتملين: \${potential})
             </div>
-            <p style="margin-top:8px;font-size:14px;"><strong>المشكلة:</strong> \${idea.problemStatement}</p>
-            <p style="margin-top:4px;font-size:13px;"><strong>الفئة المستهدفة:</strong> \${idea.targetAudience} · <strong>نموذج الربح:</strong> \${idea.monetizationModel}</p>
-            <p style="margin-top:4px;font-size:13px;color:#475569;"><strong>الاحتياجات التقنية:</strong> \${(idea.requirements || []).join(' ، ')}</p>
+            <p style="margin-top:8px;font-size:14px;"><strong>المشكلة:</strong> \${esc(idea.problemStatement)}</p>
+            <p style="margin-top:4px;font-size:13px;"><strong>الفئة المستهدفة:</strong> \${esc(idea.targetAudience)} · <strong>نموذج الربح:</strong> \${esc(idea.monetizationModel)}</p>
+            <p style="margin-top:4px;font-size:13px;color:#475569;"><strong>الاحتياجات التقنية:</strong> \${(idea.requirements || []).map(r => esc(r)).join(' ، ')}</p>
           </div>
         \`;
       }).join('');
@@ -417,18 +449,18 @@ export function buildStandaloneHtmlFile(data: DeveloperWorkspaceData): string {
               const idea = state.ideas.find(i => i.id === c.ideaId);
               return \`
                 <tr>
-                  <td><strong>\${c.name}</strong><div class="meta-line">\${c.roleOrPersona}</div></td>
-                  <td>\${idea ? idea.title : '-'}</td>
+                  <td><strong>\${esc(c.name)}</strong><div class="meta-line">\${esc(c.roleOrPersona)}</div></td>
+                  <td>\${idea ? esc(idea.title) : '-'}</td>
                   <td>
-                    <select onchange="updateContactStage('\${c.id}', this.value)">
-                      \${Object.entries(STAGE_MAP).map(([k, v]) => \`<option value="\${k}" \${c.stage === k ? 'selected' : ''}>\${v}</option>\`).join('')}
+                    <select class="contact-stage-select" data-contact-id="\${esc(c.id)}">
+                      \${Object.entries(STAGE_MAP).map(([k, v]) => \`<option value="\${esc(k)}" \${c.stage === k ? 'selected' : ''}>\${esc(v)}</option>\`).join('')}
                     </select>
                   </td>
-                  <td class="mono">\${c.channels.phone || c.channels.whatsapp || '-'}</td>
-                  <td class="mono">\${c.channels.xHandle || '-'}</td>
-                  <td class="mono">\${c.channels.tiktokHandle || '-'}</td>
-                  <td>\${c.channels.otherChannel || c.channels.telegramHandle || c.channels.email || '-'}</td>
-                  <td>\${c.feedbackSummary || '-'}</td>
+                  <td class="mono">\${esc(c.channels.phone || c.channels.whatsapp || '-')}</td>
+                  <td class="mono">\${esc(c.channels.xHandle || '-')}</td>
+                  <td class="mono">\${esc(c.channels.tiktokHandle || '-')}</td>
+                  <td>\${esc(c.channels.otherChannel || c.channels.telegramHandle || c.channels.email || '-')}</td>
+                  <td>\${esc(c.feedbackSummary || '-')}</td>
                 </tr>
               \`;
             }).join('')}
@@ -438,36 +470,36 @@ export function buildStandaloneHtmlFile(data: DeveloperWorkspaceData): string {
 
       document.getElementById('clientsList').innerHTML = state.clientProjects.map(p => \`
         <div class="card">
-          <h3>\${p.projectName} — \${p.clientName}</h3>
+          <h3>\${esc(p.projectName)} — \${esc(p.clientName)}</h3>
           <div class="meta-line">
-            إجمالي العقد: <span class="mono">\${p.totalBudget.toLocaleString()}</span> \${state.currency} ·
-            المدفوع: <span class="mono">\${p.paidAmount.toLocaleString()}</span> \${state.currency} ·
-            المتبقي: <span class="mono">\${(p.totalBudget - p.paidAmount).toLocaleString()}</span> \${state.currency} ·
-            جوال العميل: <span class="mono">\${p.clientPhone || '-'}</span> ·
-            حساب X: <span class="mono">\${p.clientXHandle || '-'}</span>
+            إجمالي العقد: <span class="mono">\${Number(p.totalBudget || 0).toLocaleString()}</span> \${esc(state.currency)} ·
+            المدفوع: <span class="mono">\${Number(p.paidAmount || 0).toLocaleString()}</span> \${esc(state.currency)} ·
+            المتبقي: <span class="mono">\${(Number(p.totalBudget || 0) - Number(p.paidAmount || 0)).toLocaleString()}</span> \${esc(state.currency)} ·
+            جوال العميل: <span class="mono">\${esc(p.clientPhone || '-')}</span> ·
+            حساب X: <span class="mono">\${esc(p.clientXHandle || '-')}</span>
           </div>
-          <p style="margin-top:6px;font-size:13px;">\${p.notes || ''}</p>
+          <p style="margin-top:6px;font-size:13px;">\${esc(p.notes || '')}</p>
         </div>
       \`).join('');
 
       document.getElementById('platformsList').innerHTML = state.platforms.map(pl => \`
         <div class="card">
-          <h3>\${pl.name} (<span class="mono">\${pl.domain}</span>)</h3>
-          <p style="font-size:13px;color:#475569;">\${pl.tagline}</p>
+          <h3>\${esc(pl.name)} (<span class="mono">\${esc(pl.domain)}</span>)</h3>
+          <p style="font-size:13px;color:#475569;">\${esc(pl.tagline)}</p>
           <div class="meta-line">
-            الاستضافة: \${pl.hostingProvider} · تكلفة السيرفر الشهري: <span class="mono">\${pl.monthlyServerCost}</span> \${state.currency} ·
-            المستخدمون النشطون: <span class="mono">\${pl.activeUsersCount}</span> ·
-            الإيراد الشهري: <span class="mono">\${pl.monthlyRevenue}</span> \${state.currency}
+            الاستضافة: \${esc(pl.hostingProvider)} · تكلفة السيرفر الشهري: <span class="mono">\${Number(pl.monthlyServerCost || 0)}</span> \${esc(state.currency)} ·
+            المستخدمون النشطون: <span class="mono">\${Number(pl.activeUsersCount || 0)}</span> ·
+            الإيراد الشهري: <span class="mono">\${Number(pl.monthlyRevenue || 0)}</span> \${esc(state.currency)}
           </div>
         </div>
       \`).join('');
     }
 
     function saveUpdatedHtmlFile() {
-      const htmlContent = document.documentElement.outerHTML.replace(
-        /const EMBEDDED_DATA = .*?;/,
-        'const EMBEDDED_DATA = ' + JSON.stringify(state) + ';'
-      );
+      const safeNewData = JSON.stringify(state).replace(/</g, '\\\\u003c');
+      const dataRegex = /\\/\\*__EMBEDDED_DATA_START\\*\\/[\\s\\S]*?\\/\\*__EMBEDDED_DATA_END\\*\\//;
+      const dataReplacement = '/*__EMBEDDED_DATA_START*/\\n    const EMBEDDED_DATA = ' + safeNewData + ';\\n    /*__EMBEDDED_DATA_END*/';
+      const htmlContent = document.documentElement.outerHTML.replace(dataRegex, dataReplacement);
       const blob = new Blob(['<!doctype html>\\n' + htmlContent], { type: 'text/html;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');

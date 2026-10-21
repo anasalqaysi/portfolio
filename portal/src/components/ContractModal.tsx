@@ -161,12 +161,18 @@ export const ContractModal: React.FC<ContractModalProps> = ({
       .map((node) => node.outerHTML)
       .join('\n');
 
+    const safeContractNumber = (contract.contractNumber || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+
     return `
       <!DOCTYPE html>
       <html dir="rtl" lang="ar">
       <head>
         <meta charset="utf-8">
-        <title>${contract.contractNumber} - عقد اتفاقية تقديم خدمات برمجية</title>
+        <title>${safeContractNumber} - عقد اتفاقية تقديم خدمات برمجية</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -750,14 +756,14 @@ export const ContractModal: React.FC<ContractModalProps> = ({
                     <p className="text-[11px] text-zinc-600 font-sans">
                       هندسة وتطوير الأنظمة البرمجية والحلول الرقمية
                     </p>
-                    <span className="text-[10px] text-zinc-400 font-mono tracking-wider block" dir="ltr">
+                    <span className="text-[11px] text-zinc-500 block font-medium" dir="ltr">
                       {BRAND.brandNameEn}
                     </span>
                   </div>
                 </div>
 
                 {/* Left: Formal Contract Metadata Box */}
-                <div className="text-left text-xs space-y-1.5 shrink-0 font-mono border-r pr-5 border-zinc-200">
+                <div className="text-left text-xs space-y-1.5 shrink-0 border-r pr-5 border-zinc-200">
                   <div className="font-bold text-zinc-950">
                     رقم العقد: <span className="text-blue-900 font-semibold">{contract.contractNumber}</span>
                   </div>
@@ -775,7 +781,7 @@ export const ContractModal: React.FC<ContractModalProps> = ({
                 <h1 className="text-xl sm:text-2xl font-black text-zinc-950 tracking-tight">
                   عقد تقديم خدمات برمجية وتطوير أنظمة
                 </h1>
-                <p className="text-xs text-zinc-500 font-mono mt-0.5 tracking-wider uppercase">
+                <p className="text-xs text-zinc-500 mt-0.5 font-medium">
                   Software Development & System Services Agreement
                 </p>
               </div>

@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Single admin account (Anas Al-Qaysi). Keep in sync with ADMIN_EMAIL in portal/src/firebase.ts.
+    //
+    // Security note: an email-based check is only safe while this address stays registered in
+    // Firebase Auth (Auth enforces one account per email, so nobody else can sign up with it).
+    // Never list an address here that has no existing account. For stronger guarantees, replace
+    // this check with `request.auth.uid == '<ADMIN_UID>'` (UID from Firebase Console > Authentication).
+    function isAdmin() {
+      return request.auth != null &&
+             request.auth.token.email != null &&
+             request.auth.token.email.lower() == 'alqysyanas11@gmail.com';
+    }
+
+    // 1. Main Developer Workspace
+    // Strictly confidential: Contains CRM leads, ideas lab, platforms, contracts, and full project metadata.
+    // Accessible ONLY by the authenticated admin.
+    match /developer_workspace/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    // 2. Isolated Client Portal Access
+    // Keyed by the secure project access PIN.
+    // - Clients can only read (get) their single specific document if they know the exact PIN.
+    // - Listing or querying the collection (list) is strictly DENIED to prevent enumeration.
+    // - Write, create, delete are strictly restricted to the admin.
+    match /client_portal_access/{pin} {
+      allow get: if true;
+      allow list: if false;
+      allow write: if isAdmin();
+    }
+
+    // 3. Public Portfolio Showcase
+    // Read by the public site (app.js REST fallback) and written by the portal's "publish" action.
+    match /portfolio_public/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Default: Deny everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,40 +1,36 @@
 import React, { useState } from 'react';
 import {
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
   sendPasswordResetEmail,
 } from 'firebase/auth';
 import { auth, ADMIN_EMAIL } from '../firebase';
+import { BRAND } from '../constants/brand';
 import {
-  Shield,
   Key,
   ArrowLeft,
-  Mail,
-  Lock,
   CheckCircle,
   AlertTriangle,
-  Layers,
-  Terminal,
-  ExternalLink,
+  Lock,
+  ArrowRight,
 } from 'lucide-react';
 
 interface AuthViewProps {
-  onClientPinLogin?: (pinOrCode: string) => boolean;
-  onAdminBypass?: () => void;
+  onClientPinLogin?: (pinOrCode: string) => Promise<boolean> | boolean;
 }
 
 export const AuthView: React.FC<AuthViewProps> = ({
   onClientPinLogin,
-  onAdminBypass,
 }) => {
-  const [activeTab, setActiveTab] = useState<'admin' | 'client'>('admin');
+  // Default mode is strictly 'client' for all visitors
+  const [activeTab, setActiveTab] = useState<'client' | 'admin'>('client');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [clientPin, setClientPin] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
-  const [isRegisterMode, setIsRegisterMode] = useState(false);
+  const [failedPinAttempts, setFailedPinAttempts] = useState(0);
+  const [pinLockoutUntil, setPinLockoutUntil] = useState<number | null>(null);
 
   const handleAdminAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,26 +39,16 @@ export const AuthView: React.FC<AuthViewProps> = ({
     setIsSubmitting(true);
 
     try {
-      if (isRegisterMode) {
-        await createUserWithEmailAndPassword(auth, email.trim(), password);
-        setSuccessMsg('تم إنشاء حساب المدير بنجاح وجاري فتح لوحة التحكم...');
-      } else {
-        await signInWithEmailAndPassword(auth, email.trim(), password);
-        setSuccessMsg('تم التحقق بنجاح. مرحباً بك م. أنس.');
-      }
+      await signInWithEmailAndPassword(auth, email.trim(), password);
+      setSuccessMsg('تم التحقق بنجاح. مرحباً بك.');
     } catch (err: any) {
-      console.error('Auth error:', err);
-      let message = 'حدث خطأ: ' + (err.message || 'يرجى التحقق من البيانات.');
-      if (err.code === 'auth/operation-not-allowed' || err.code === 'auth/configuration-not-found') {
-        message = 'يرجى تفعيل (Email/Password) من صفحة Firebase Console -> Authentication -> Sign-in method.';
-      } else if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
-        message = 'البريد الإلكتروني أو كلمة المرور غير صحيحة، أو لم يتم إنشاء الحساب بعد.';
+      let message = 'تعذر تسجيل الدخول. يرجى التحقق من البريد وكلمة المرور.';
+      if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
+        message = 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
       } else if (err.code === 'auth/wrong-password') {
         message = 'كلمة المرور غير مطابقة.';
-      } else if (err.code === 'auth/email-already-in-use') {
-        message = 'هذا البريد مسجل بالفعل كمدير. يرجى تسجيل الدخول.';
-      } else if (err.code === 'auth/weak-password') {
-        message = 'كلمة المرور يجب ألا تقل عن 6 خانات.';
+      } else if (err.code === 'auth/too-many-requests') {
+        message = 'تم إيقاف المحاولات مؤقتاً لكثرة المحاولات غير الناجحة. يرجى الانتظار دقيقة.';
       }
       setErrorMsg(message);
     } finally {
@@ -72,7 +58,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
 
   const handleForgotPassword = async () => {
     if (!email.trim()) {
-      setErrorMsg('أدخل بريدك الإلكتروني في الحقل أعلاه أولاً لإرسال رابط الاستعادة.');
+      setErrorMsg('أدخل بريدك الإلكتروني في الحقل أعلاه أولاً لإرسال رابط استعادة كلمة المرور.');
       return;
     }
     setErrorMsg('');
@@ -82,89 +68,90 @@ export const AuthView: React.FC<AuthViewProps> = ({
     try {
       await sendPasswordResetEmail(auth, email.trim());
       setSuccessMsg(`تم إرسال رابط إعادة تعيين كلمة المرور إلى ${email} بنجاح.`);
-    } catch (err: any) {
+    } catch {
       setErrorMsg('تعذر إرسال رابط الاستعادة. تأكد من صحة البريد المدخل.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleClientSubmit = (e: React.FormEvent) => {
+  const handleClientSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
     setSuccessMsg('');
 
-    if (!clientPin.trim()) {
-      setErrorMsg('يرجى إدخال رمز المشروع أو كود المتابعة.');
+    if (pinLockoutUntil && Date.now() < pinLockoutUntil) {
+      const waitSec = Math.ceil((pinLockoutUntil - Date.now()) / 1000);
+      setErrorMsg(`تم تجاوز الحد الأقصى للمحاولات الخاطئة. يرجى الانتظار ${waitSec} ثانية قبل المحاولة مجدداً.`);
+      return;
+    }
+
+    const clean = clientPin.trim();
+    if (!clean) {
+      setErrorMsg('يرجى إدخال رمز وصول المشروع (PIN).');
       return;
     }
 
     if (onClientPinLogin) {
-      const ok = onClientPinLogin(clientPin.trim());
-      if (!ok) {
-        setErrorMsg('الرمز غير مسجل في النظام. تأكد من الرمز المستلم من م. أنس القيسي.');
+      setIsSubmitting(true);
+      try {
+        const ok = await onClientPinLogin(clean);
+        if (!ok) {
+          const nextCount = failedPinAttempts + 1;
+          setFailedPinAttempts(nextCount);
+          if (nextCount >= 5) {
+            setPinLockoutUntil(Date.now() + 60000);
+            setErrorMsg('تم إدخال الرمز بشكل غير صحيح عدة مرات. يرجى الانتظار دقيقة واحدة.');
+          } else {
+            setErrorMsg('رمز المشروع غير صحيح أو غير مسجل. يرجى التحقق من الرمز والمحاولة مجدداً.');
+          }
+        } else {
+          setFailedPinAttempts(0);
+          setPinLockoutUntil(null);
+        }
+      } catch {
+        setErrorMsg('تعذر التحقق من الرمز حالياً. يرجى المحاولة لاحقاً.');
+      } finally {
+        setIsSubmitting(false);
       }
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#0f1015] text-[#f0f1f5] flex items-center justify-center p-4 sm:p-6 font-sans" dir="rtl">
-      <div className="w-full max-w-[440px]">
+    <div className="min-h-screen bg-[#09090b] text-[#f4f4f5] flex flex-col justify-between p-4 sm:p-6 font-sans selection:bg-zinc-800 selection:text-white" dir="rtl">
+      
+      {/* Top spacing */}
+      <div className="hidden sm:block" />
+
+      {/* Main Container */}
+      <div className="w-full max-w-[420px] mx-auto my-auto py-8">
         
-        {/* Brand Monogram & Title */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs text-blue-400 mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span>نظام مرصد المبرمج وبوابة العملاء</span>
+        {/* Brand Header */}
+        <div className="text-center mb-6">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-zinc-900 border border-white/10 p-2.5 mb-3 shadow-lg">
+            <img
+              src={BRAND.logoUrl}
+              alt="Brand Logo"
+              className="w-full h-full object-contain"
+              onError={(e) => {
+                // Fallback icon if logo fails to render
+                (e.currentTarget as HTMLElement).style.display = 'none';
+              }}
+            />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-white mb-1.5">
-            مرصد المشاريع والعملاء
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white mb-1.5">
+            {activeTab === 'client' ? 'بوابة متابعة المشاريع' : 'لوحة إدارة المنظومة'}
           </h1>
-          <p className="text-xs text-zinc-400 leading-relaxed max-w-sm mx-auto">
-            منظومة إدارة وتنفيذ الأنظمة البرمجية ومتابعة مراحل التسليم
+          <p className="text-xs text-zinc-400 leading-relaxed max-w-xs mx-auto">
+            {activeTab === 'client'
+              ? 'أنس القيسي للحلول الرقمية · استعراض مراحل الإنجاز وتسليم المشاريع'
+              : 'تسجيل دخول الإدارة لإدارة ومزامنة المشاريع وسير العمل'}
           </p>
         </div>
 
-        {/* Main Card with Soft Borders */}
-        <div className="bg-[#171821] border border-white/[0.08] rounded-2xl p-6 sm:p-8 shadow-xl relative">
+        {/* Card */}
+        <div className="bg-[#121215] border border-white/[0.08] rounded-2xl p-6 sm:p-7 shadow-2xl relative">
           
-          {/* Segmented Control Switch */}
-          <div className="grid grid-cols-2 p-1 bg-zinc-950 border border-zinc-850 rounded-xl mb-6">
-            <button
-              type="button"
-              onClick={() => {
-                setActiveTab('admin');
-                setErrorMsg('');
-                setSuccessMsg('');
-              }}
-              className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                activeTab === 'admin'
-                  ? 'bg-zinc-800 text-white shadow-sm border border-zinc-700/50'
-                  : 'text-zinc-400 hover:text-zinc-200'
-              }`}
-            >
-              <Shield className="w-3.5 h-3.5" />
-              <span>لوحة التحكم (أنس)</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                setActiveTab('client');
-                setErrorMsg('');
-                setSuccessMsg('');
-              }}
-              className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                activeTab === 'client'
-                  ? 'bg-zinc-800 text-white shadow-sm border border-zinc-700/50'
-                  : 'text-zinc-400 hover:text-zinc-200'
-              }`}
-            >
-              <Key className="w-3.5 h-3.5" />
-              <span>بوابة العميل</span>
-            </button>
-          </div>
-
           {/* Feedback alerts */}
           {errorMsg && (
             <div className="mb-5 p-3 rounded-xl bg-red-950/40 border border-red-900/60 text-red-300 text-xs flex items-start gap-2.5">
@@ -180,24 +167,57 @@ export const AuthView: React.FC<AuthViewProps> = ({
             </div>
           )}
 
-          {/* Tab 1: Admin Form */}
+          {/* 1. Client View (Default) */}
+          {activeTab === 'client' && (
+            <form onSubmit={handleClientSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-medium text-zinc-300 mb-1.5">
+                  رمز وصول المشروع (PIN)
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    required
+                    autoFocus
+                    value={clientPin}
+                    onChange={(e) => setClientPin(e.target.value)}
+                    placeholder="مثال: 7K9X2B4P"
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl py-3 px-3.5 text-base font-mono text-center tracking-[0.25em] text-white placeholder:text-zinc-600 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition-colors uppercase"
+                  />
+                </div>
+                <p className="text-[11px] text-zinc-500 mt-2 leading-relaxed text-center">
+                  أدخل الرمز السري المزود لك لمراجعة لوحة تقدم مشروعك ومراحله لحظياً.
+                </p>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-3 px-4 bg-white hover:bg-zinc-200 text-zinc-950 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-3 shadow-md"
+              >
+                <span>{isSubmitting ? 'جاري التحقق...' : 'عرض لوحة المشروع'}</span>
+                <ArrowLeft className="w-3.5 h-3.5" />
+              </button>
+            </form>
+          )}
+
+          {/* 2. Admin View (Discreet, toggled only when Anas clicks the secret link) */}
           {activeTab === 'admin' && (
             <form onSubmit={handleAdminAuth} className="space-y-4">
               <div>
                 <label className="block text-xs font-medium text-zinc-300 mb-1.5">
-                  البريد الإلكتروني المعتمد
+                  البريد الإلكتروني
                 </label>
-                <div className="relative">
-                  <input
-                    type="email"
-                    required
-                    dir="ltr"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder={ADMIN_EMAIL}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl py-2.5 px-3.5 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 font-mono transition-colors"
-                  />
-                </div>
+                <input
+                  type="email"
+                  required
+                  autoFocus
+                  dir="ltr"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={ADMIN_EMAIL}
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl py-2.5 px-3.5 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 font-mono transition-colors"
+                />
               </div>
 
               <div>
@@ -210,7 +230,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
                     onClick={handleForgotPassword}
                     className="text-[11px] text-zinc-400 hover:text-zinc-200 transition-colors"
                   >
-                    استعادة الرمز؟
+                    استعادة كلمة المرور؟
                   </button>
                 </div>
                 <input
@@ -229,109 +249,55 @@ export const AuthView: React.FC<AuthViewProps> = ({
                 disabled={isSubmitting}
                 className="w-full py-2.5 px-4 bg-white hover:bg-zinc-200 text-zinc-950 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-2"
               >
-                <span>
-                  {isSubmitting
-                    ? 'جاري التحقق...'
-                    : isRegisterMode
-                    ? 'تسجيل حساب المدير الجديد'
-                    : 'دخول لوحة التحكم'}
-                </span>
+                <span>{isSubmitting ? 'جاري التحقق...' : 'دخول لوحة الإدارة'}</span>
                 <ArrowLeft className="w-3.5 h-3.5" />
               </button>
 
-              <div className="text-center pt-2">
+              <div className="pt-2 text-center">
                 <button
                   type="button"
                   onClick={() => {
-                    setIsRegisterMode(!isRegisterMode);
+                    setActiveTab('client');
                     setErrorMsg('');
                     setSuccessMsg('');
                   }}
-                  className="text-[11px] text-zinc-400 hover:text-zinc-200 transition-colors cursor-pointer"
+                  className="text-[11px] text-zinc-400 hover:text-zinc-200 inline-flex items-center gap-1 transition-colors"
                 >
-                  {isRegisterMode
-                    ? 'لديك حساب؟ تسجيل الدخول'
-                    : 'إنشاء حساب جديد للمدير لأول مرة'}
+                  <ArrowRight className="w-3 h-3" />
+                  <span>العودة لبوابة العملاء</span>
                 </button>
               </div>
             </form>
           )}
-
-          {/* Tab 2: Client PIN Form */}
-          {activeTab === 'client' && (
-            <form onSubmit={handleClientSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-medium text-zinc-300 mb-1.5">
-                  كود المشروع أو رقم المتابعة (PIN)
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    required
-                    value={clientPin}
-                    onChange={(e) => setClientPin(e.target.value)}
-                    placeholder="مثال: cp-1"
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl py-2.5 px-3.5 text-sm font-mono text-center tracking-widest text-white placeholder:text-zinc-600 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition-colors uppercase"
-                  />
-                </div>
-                <p className="text-[11px] text-zinc-500 mt-2 leading-relaxed">
-                  * تم تزويدك بهذا الرمز عبر وثيقة البدء أو رسالة المتابعة في الواتساب لمراجعة تقدم مشروعك لحظياً.
-                </p>
-              </div>
-
-              {/* Sample test pills */}
-              <div className="pt-1">
-                <span className="text-[10px] text-zinc-500 block mb-1.5">رموز جاهزة للمعاينة:</span>
-                <div className="flex flex-wrap gap-1.5">
-                  {['cp-1 (دار العقار)', 'cp-2 (ركن القهوة)', 'cp-3 (مكتب طلال)'].map((sample, idx) => {
-                    const code = `cp-${idx + 1}`;
-                    return (
-                      <button
-                        key={code}
-                        type="button"
-                        onClick={() => setClientPin(code)}
-                        className="px-2 py-1 rounded-md bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 text-[10px] text-zinc-400 hover:text-zinc-200 font-mono transition-colors cursor-pointer"
-                      >
-                        {sample}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full py-2.5 px-4 bg-white hover:bg-zinc-200 text-zinc-950 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer mt-2"
-              >
-                <span>فتح تقرير المشروع والتحديثات</span>
-                <ArrowLeft className="w-3.5 h-3.5" />
-              </button>
-            </form>
-          )}
-
-          {/* Bottom Developer Bypass Access */}
-          {onAdminBypass && (
-            <div className="mt-6 pt-4 border-t border-zinc-800/60 text-center">
-              <button
-                type="button"
-                onClick={onAdminBypass}
-                className="text-[11px] font-mono text-zinc-500 hover:text-zinc-300 transition-colors flex items-center justify-center gap-1.5 mx-auto cursor-pointer"
-              >
-                <Terminal className="w-3 h-3 text-emerald-500" />
-                <span>دخول فوري للمعاينة كمدير (Bypass Auth)</span>
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Quiet Minimal Footer */}
-        <div className="mt-6 text-center text-[11px] text-zinc-500 flex items-center justify-center gap-2">
-          <span>اتصال مشفر ومحمي</span>
-          <span>·</span>
-          <span>Google Firebase Engine</span>
         </div>
 
       </div>
+
+      {/* Subtle, Minimal Bottom Footer with discreet Admin Access */}
+      <footer className="w-full max-w-sm mx-auto text-center pb-2">
+        <div className="flex items-center justify-between text-[11px] text-zinc-600 px-2">
+          <span>{BRAND.brandName} © {new Date().getFullYear()}</span>
+          
+          {/* Subtle Admin Trigger - Small, unnoticeable to clients */}
+          {activeTab === 'client' && (
+            <button
+              type="button"
+              onClick={() => {
+                setActiveTab('admin');
+                setErrorMsg('');
+                setSuccessMsg('');
+              }}
+              title="لوحة الإدارة"
+              className="text-zinc-700 hover:text-zinc-400 p-1 rounded transition-colors flex items-center gap-1 opacity-60 hover:opacity-100"
+            >
+              <Lock className="w-3 h-3" />
+              <span className="text-[10px]">إدارة</span>
+            </button>
+          )}
+        </div>
+      </footer>
+
     </div>
   );
 };
+

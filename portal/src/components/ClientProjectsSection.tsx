@@ -4,7 +4,11 @@ import type {
   ClientProjectStatus,
   ProjectMilestone,
 } from '../types';
-import { CLIENT_STATUS_LABELS } from '../utils/workspaceLogic';
+import {
+  CLIENT_STATUS_LABELS,
+  generateSecurePin,
+  normalizePin,
+} from '../utils/workspaceLogic';
 import { ContractModal } from './ContractModal';
 import {
   FileText,
@@ -38,6 +42,8 @@ export const ClientProjectsSection: React.FC<ClientProjectsSectionProps> = ({
   const [clientName, setClientName] = useState('');
   const [clientPhone, setClientPhone] = useState('');
   const [clientXHandle, setClientXHandle] = useState('');
+  const [clientEmail, setClientEmail] = useState('');
+  const [customPin, setCustomPin] = useState('');
   const [projectType, setProjectType] = useState('تطبيق ويب ولوحة تحكم');
   const [status, setStatus] = useState<ClientProjectStatus>('in_progress');
   const [totalBudget, setTotalBudget] = useState<number>(15000);
@@ -57,12 +63,20 @@ export const ClientProjectsSection: React.FC<ClientProjectsSectionProps> = ({
   >({});
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  const handleCopyClientLink = (project: ClientProject) => {
-    const pin = project.clientAccessPin || project.id;
+  const handleCopyClientLink = async (project: ClientProject) => {
+    let pin = project.clientAccessPin;
+    if (!pin) {
+      pin = generateSecurePin(projects.map((p) => p.clientAccessPin || ''));
+      onUpdateProject({ ...project, clientAccessPin: pin });
+    }
     const link = `${window.location.origin}/?pin=${encodeURIComponent(pin)}`;
-    navigator.clipboard.writeText(link);
-    setCopiedId(project.id);
-    setTimeout(() => setCopiedId(null), 3000);
+    try {
+      await navigator.clipboard.writeText(link);
+      setCopiedId(project.id);
+      setTimeout(() => setCopiedId(null), 3000);
+    } catch {
+      window.prompt('انسخ رابط المشروع المباشر للعميل:', link);
+    }
   };
 
   const handleCreateProject = (e: React.FormEvent) => {
@@ -71,8 +85,21 @@ export const ClientProjectsSection: React.FC<ClientProjectsSectionProps> = ({
       setFormError('يرجى إدخال اسم المشروع واسم العميل.');
       return;
     }
+
+    const cleanCustom = normalizePin(customPin);
+    if (cleanCustom) {
+      const isTaken = projects.some((p) => normalizePin(p.clientAccessPin) === cleanCustom);
+      if (isTaken) {
+        setFormError('رمز الوصول (PIN) المخصص مستخدم مسبقاً في مشروع آخر. يرجى اختيار رمز مختلف.');
+        return;
+      }
+    }
+
     const total = Number(totalBudget) || 0;
     const paid = Number(paidAmount) || 0;
+    const existingPins = projects.map((p) => p.clientAccessPin || '');
+    const generatedPin = customPin.trim().toUpperCase() || generateSecurePin(existingPins);
+    const riyadhDate = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Riyadh' }).format(new Date());
 
     const newProj: ClientProject = {
       id: `cp-${Date.now()}`,
@@ -80,12 +107,13 @@ export const ClientProjectsSection: React.FC<ClientProjectsSectionProps> = ({
       clientName: clientName.trim(),
       clientPhone: clientPhone.trim(),
       clientXHandle: clientXHandle.trim(),
-      clientEmail: '',
+      clientEmail: clientEmail.trim(),
+      clientAccessPin: generatedPin,
       projectType: projectType.trim(),
       status,
       totalBudget: total,
       paidAmount: paid,
-      startDate: new Date().toISOString().slice(0, 10),
+      startDate: riyadhDate,
       deadline,
       repoUrl: repoUrl.trim(),
       stagingUrl: stagingUrl.trim(),
@@ -95,7 +123,7 @@ export const ClientProjectsSection: React.FC<ClientProjectsSectionProps> = ({
           title: 'الدفعة المقدمة وتحليل المتطلبات',
           amount: paid,
           isPaid: paid > 0,
-          isDone: true,
+          isDone: false, // New projects start with incomplete milestone until verified
         },
         ...(total > paid
           ? [
@@ -117,6 +145,10 @@ export const ClientProjectsSection: React.FC<ClientProjectsSectionProps> = ({
     setClientName('');
     setClientPhone('');
     setClientXHandle('');
+    setClientEmail('');
+    setCustomPin('');
+    setRepoUrl('');
+    setStagingUrl('');
     setNotes('');
     setFormError('');
     setShowAddForm(false);
@@ -384,6 +416,78 @@ export const ClientProjectsSection: React.FC<ClientProjectsSectionProps> = ({
                 value={projectType}
                 onChange={(e) => setProjectType(e.target.value)}
                 className="w-full px-3 py-2 text-xs bg-[#0f1015] border border-white/10 rounded-xl text-zinc-200 focus:outline-none focus:border-blue-500"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="cp-email"
+                className="block text-xs font-semibold text-zinc-300 mb-1"
+              >
+                بريد العميل الإلكتروني
+              </label>
+              <input
+                id="cp-email"
+                type="email"
+                dir="ltr"
+                value={clientEmail}
+                onChange={(e) => setClientEmail(e.target.value)}
+                placeholder="client@example.com"
+                className="w-full px-3 py-2 text-xs font-mono bg-[#0f1015] border border-white/10 rounded-xl text-zinc-200 focus:outline-none focus:border-blue-500"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="cp-pin"
+                className="block text-xs font-semibold text-zinc-300 mb-1"
+              >
+                رمز الدخول (PIN) — اختياري، يُولد تلقائياً
+              </label>
+              <input
+                id="cp-pin"
+                type="text"
+                dir="ltr"
+                value={customPin}
+                onChange={(e) => setCustomPin(e.target.value)}
+                placeholder="مثال: CL-948201"
+                className="w-full px-3 py-2 text-xs font-mono uppercase bg-[#0f1015] border border-white/10 rounded-xl text-zinc-200 focus:outline-none focus:border-blue-500"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="cp-staging"
+                className="block text-xs font-semibold text-zinc-300 mb-1"
+              >
+                رابط سيرفر التجربة (Staging URL)
+              </label>
+              <input
+                id="cp-staging"
+                type="url"
+                dir="ltr"
+                value={stagingUrl}
+                onChange={(e) => setStagingUrl(e.target.value)}
+                placeholder="https://staging.example.com"
+                className="w-full px-3 py-2 text-xs font-mono bg-[#0f1015] border border-white/10 rounded-xl text-zinc-200 focus:outline-none focus:border-blue-500"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="cp-repo"
+                className="block text-xs font-semibold text-zinc-300 mb-1"
+              >
+                مستودع الكود (GitHub Repo)
+              </label>
+              <input
+                id="cp-repo"
+                type="url"
+                dir="ltr"
+                value={repoUrl}
+                onChange={(e) => setRepoUrl(e.target.value)}
+                placeholder="https://github.com/anas-dev/..."
+                className="w-full px-3 py-2 text-xs font-mono bg-[#0f1015] border border-white/10 rounded-xl text-zinc-200 focus:outline-none focus:border-blue-500"
               />
             </div>
           </div>

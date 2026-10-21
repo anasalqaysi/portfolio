@@ -2,12 +2,68 @@ import type {
   IdeaItem,
   OutreachContact,
   ClientProject,
-  PersonalPlatform,
   DeveloperWorkspaceData,
   OutreachStage,
   IdeaStatus,
   ClientProjectStatus,
 } from '../types';
+import { INITIAL_WORKSPACE_DATA } from '../data/seedData';
+
+/**
+ * Coerces untrusted persisted data (localStorage / Firestore) into a valid workspace shape,
+ * falling back to seed defaults for missing scalar fields and empty arrays for collections.
+ */
+export function normalizeWorkspaceData(raw: any): DeveloperWorkspaceData {
+  return {
+    developerName: typeof raw?.developerName === 'string' ? raw.developerName : INITIAL_WORKSPACE_DATA.developerName,
+    developerTitle: typeof raw?.developerTitle === 'string' ? raw.developerTitle : INITIAL_WORKSPACE_DATA.developerTitle,
+    currency: typeof raw?.currency === 'string' ? raw.currency : INITIAL_WORKSPACE_DATA.currency,
+    ideas: Array.isArray(raw?.ideas) ? raw.ideas : [],
+    contacts: Array.isArray(raw?.contacts) ? raw.contacts : [],
+    clientProjects: Array.isArray(raw?.clientProjects) ? raw.clientProjects : [],
+    platforms: Array.isArray(raw?.platforms) ? raw.platforms : [],
+  };
+}
+
+/** Canonical form of a client access PIN; also used as the Firestore document ID. */
+export function normalizePin(pin: string | null | undefined): string {
+  return (pin || '').trim().toLowerCase();
+}
+
+export function findProjectByPin(
+  projects: ClientProject[],
+  pin: string
+): ClientProject | undefined {
+  const target = normalizePin(pin);
+  if (!target) return undefined;
+  return projects.find((p) => normalizePin(p.clientAccessPin) === target);
+}
+
+/** PINs that were published before but no longer belong to any project (deleted or rotated). */
+export function getStalePins(
+  previouslyPublished: Iterable<string>,
+  current: ReadonlySet<string>
+): string[] {
+  return [...previouslyPublished].filter((pin) => !current.has(pin));
+}
+
+const PIN_ALPHABET = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ'; // 32 chars: no 0/O/1/I ambiguity
+
+/**
+ * Generates a `CL-XXXXXXXX` PIN (40 bits of entropy) using a CSPRNG.
+ * `existingPins` comparison is case-insensitive.
+ */
+export function generateSecurePin(existingPins: string[]): string {
+  const taken = new Set(existingPins.map(normalizePin));
+  const bytes = new Uint8Array(8);
+  for (let attempt = 0; attempt < 100; attempt++) {
+    crypto.getRandomValues(bytes);
+    // 256 is a multiple of 32, so the modulo introduces no bias.
+    const code = 'CL-' + Array.from(bytes, (b) => PIN_ALPHABET[b % PIN_ALPHABET.length]).join('');
+    if (!taken.has(normalizePin(code))) return code;
+  }
+  throw new Error('Unable to generate a unique client PIN');
+}
 
 export interface IdeaValidationMetrics {
   totalContacted: number;

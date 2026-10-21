@@ -4,6 +4,33 @@ const FORM_ENDPOINT = 'https://formsubmit.co/ajax/ca5739aa2f14d0de06a690aa6c86d8
 const query = (selector, parent = document) => parent.querySelector(selector);
 const queryAll = (selector, parent = document) => [...parent.querySelectorAll(selector)];
 
+function escapeHtml(str) {
+    if (str == null) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function sanitizeUrl(rawUrl) {
+    if (!rawUrl || typeof rawUrl !== 'string') return '';
+    const trimmed = rawUrl.trim();
+    if (trimmed.startsWith('/') || trimmed.startsWith('./') || trimmed.startsWith('assets/')) {
+        return trimmed.replace(/[<>"']/g, '');
+    }
+    try {
+        const parsed = new URL(trimmed, window.location.href);
+        if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+            return parsed.href;
+        }
+    } catch {
+        // Invalid URL
+    }
+    return '';
+}
+
 function initTheme() {
     const themeToggle = query('#themeToggle');
     if (!themeToggle) return;
@@ -356,8 +383,8 @@ async function initDynamicProjects() {
         filterBar.innerHTML = categories
             .map(
                 (cat, idx) => `
-            <button type="button" class="filter-btn ${idx === 0 ? 'active' : ''}" data-cat="${cat.id}">
-                ${cat.label}
+            <button type="button" class="filter-btn ${idx === 0 ? 'active' : ''}" data-cat="${escapeHtml(cat.id)}">
+                ${escapeHtml(cat.label)}
             </button>
         `
             )
@@ -399,15 +426,20 @@ async function initDynamicProjects() {
             // Alternating Zigzag: even index normal (Image Right in RTL), odd index reverse (Image Left)
             const isReverse = index % 2 === 1;
             card.className = `project-card reveal revealed ${isReverse ? 'project-reverse' : ''}`;
-            card.setAttribute('data-project-id', item.id);
+            card.setAttribute('data-project-id', escapeHtml(item.id));
+
+            const safeTitle = escapeHtml(item.title);
+            const safeDesc = escapeHtml(item.description);
+            const safeBadge = escapeHtml(item.badge || item.categoryLabel || 'مشروع معتمد');
+            const safeDemoUrl = sanitizeUrl(item.demoUrl);
 
             const techPills = (item.techStack || [])
-                .map((t) => `<span class="tech-pill">${t}</span>`)
+                .map((t) => `<span class="tech-pill">${escapeHtml(t)}</span>`)
                 .join('');
 
-            const actionBtn = item.demoUrl
+            const actionBtn = safeDemoUrl
                 ? `<div class="project-actions">
-                    <a href="${item.demoUrl}" class="btn btn-primary btn-sm" target="_blank" rel="noopener noreferrer">
+                    <a href="${safeDemoUrl}" class="btn btn-primary btn-sm" target="_blank" rel="noopener noreferrer">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                             <polyline points="15 3 21 3 21 9"></polyline>
@@ -419,20 +451,21 @@ async function initDynamicProjects() {
                 : '';
 
             // Render Image Column: multi-image swiper, single image, or precision mockup
-            const imagesList = Array.isArray(item.images) && item.images.length > 0
+            const rawImagesList = Array.isArray(item.images) && item.images.length > 0
                 ? item.images
                 : (item.imageUrl ? [item.imageUrl] : []);
+            const imagesList = rawImagesList.map((img) => sanitizeUrl(img)).filter(Boolean);
 
             let imageColumnHtml = '';
             if (imagesList.length > 1) {
-                const swiperId = `swiper-${item.id.replace(/[^a-zA-Z0-9_-]/g, '_')}`;
+                const swiperId = `swiper-${String(item.id).replace(/[^a-zA-Z0-9_-]/g, '_')}`;
                 imageColumnHtml = `
                     <div class="project-image">
                         <div class="swiper project-swiper" id="${swiperId}">
                             <div class="swiper-wrapper">
                                 ${imagesList.map((img, i) => `
                                     <div class="swiper-slide">
-                                        <img src="${img}" alt="${item.title} - ${i + 1}" loading="${i === 0 ? 'eager' : 'lazy'}">
+                                        <img src="${img}" alt="${safeTitle} - ${i + 1}" loading="${i === 0 ? 'eager' : 'lazy'}">
                                     </div>
                                 `).join('')}
                             </div>
@@ -440,20 +473,20 @@ async function initDynamicProjects() {
                             <div class="swiper-button-prev"></div>
                             <div class="swiper-button-next"></div>
                         </div>
-                        <div class="project-badge">${item.badge || item.categoryLabel || 'مشروع معتمد'}</div>
+                        <div class="project-badge">${safeBadge}</div>
                     </div>
                 `;
             } else if (imagesList.length === 1) {
                 imageColumnHtml = `
                     <div class="project-image">
-                        <img src="${imagesList[0]}" alt="${item.title}" loading="lazy">
-                        <div class="project-badge">${item.badge || item.categoryLabel || 'مشروع معتمد'}</div>
+                        <img src="${imagesList[0]}" alt="${safeTitle}" loading="lazy">
+                        <div class="project-badge">${safeBadge}</div>
                     </div>
                 `;
             } else {
                 let domainText = 'system.live';
                 try {
-                    if (item.demoUrl) domainText = new URL(item.demoUrl).hostname.replace(/^www\./, '');
+                    if (safeDemoUrl) domainText = escapeHtml(new URL(safeDemoUrl).hostname.replace(/^www\./, ''));
                 } catch {
                     domainText = 'demo.online';
                 }
@@ -472,12 +505,12 @@ async function initDynamicProjects() {
                                 </div>
                                 <div class="mockup-body">
                                     <div class="mockup-logo-badge">AD</div>
-                                    <h4>${item.title}</h4>
-                                    <p>${item.categoryLabel || 'نظام رقمي تفاعلي متكامل'}</p>
+                                    <h4>${safeTitle}</h4>
+                                    <p>${escapeHtml(item.categoryLabel || 'نظام رقمي تفاعلي متكامل')}</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="project-badge">${item.badge || item.categoryLabel || 'مشروع معتمد'}</div>
+                        <div class="project-badge">${safeBadge}</div>
                     </div>
                 `;
             }
@@ -486,8 +519,8 @@ async function initDynamicProjects() {
                 ${imageColumnHtml}
                 <div class="project-content">
                     <div>
-                        <h3 class="project-title">${item.title}</h3>
-                        <p class="project-desc">${item.description}</p>
+                        <h3 class="project-title">${safeTitle}</h3>
+                        <p class="project-desc">${safeDesc}</p>
                     </div>
                     <div class="tech-stack">${techPills}</div>
                     ${actionBtn}
@@ -504,7 +537,7 @@ async function initDynamicProjects() {
                     ? item.images
                     : (item.imageUrl ? [item.imageUrl] : []);
                 if (imagesList.length > 1) {
-                    const swiperId = `#swiper-${item.id.replace(/[^a-zA-Z0-9_-]/g, '_')}`;
+                    const swiperId = `#swiper-${String(item.id).replace(/[^a-zA-Z0-9_-]/g, '_')}`;
                     const el = query(swiperId, grid);
                     if (el && !el.swiper) {
                         new Swiper(el, {

@@ -117,8 +117,10 @@ export const OutreachCrmSection: React.FC<OutreachCrmSectionProps> = ({
   const [feedbackSummary, setFeedbackSummary] = useState('');
   const [willingToPay, setWillingToPay] = useState(true);
   const [expectedPriceMonthly, setExpectedPriceMonthly] = useState<number>(100);
-  const [nextFollowUpDate, setNextFollowUpDate] = useState(
-    new Date(Date.now() + 5 * 86400000).toISOString().slice(0, 10)
+  const [nextFollowUpDate, setNextFollowUpDate] = useState(() =>
+    new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Riyadh' }).format(
+      new Date(Date.now() + 5 * 86400000)
+    )
   );
   const [formError, setFormError] = useState('');
 
@@ -166,11 +168,10 @@ export const OutreachCrmSection: React.FC<OutreachCrmSectionProps> = ({
         telegramHandle: telegramHandle.trim(),
         otherChannel: otherChannel.trim(),
       },
-      feedbackSummary:
-        feedbackSummary.trim() || 'تم التواصل المبدئي وبانتظار التفاصيل',
+      feedbackSummary: feedbackSummary.trim(),
       willingToPay,
       expectedPriceMonthly: Number(expectedPriceMonthly) || 0,
-      lastContactDate: new Date().toISOString().slice(0, 10),
+      lastContactDate: new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Riyadh' }).format(new Date()),
       nextFollowUpDate,
     };
     onAddContact(newContact);
@@ -197,10 +198,6 @@ export const OutreachCrmSection: React.FC<OutreachCrmSectionProps> = ({
       <div className="bg-[#171821] border border-white/[0.07] rounded-2xl p-6 sm:p-7 shadow-sm">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20 mb-2.5">
-              <Users className="w-3.5 h-3.5" />
-              <span>إدارة وتواصل العملاء المحتملين</span>
-            </div>
             <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
               سجل تواصل وتحقق العملاء (CRM)
             </h2>

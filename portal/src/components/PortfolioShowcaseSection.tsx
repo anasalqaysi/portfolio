@@ -475,12 +475,13 @@ export const PortfolioShowcaseSection: React.FC = () => {
     copy[index] = copy[targetIndex];
     copy[targetIndex] = temp;
 
-    // Update order numbers
-    copy.forEach((item, idx) => {
-      item.order = idx + 1;
-    });
+    // Update order numbers immutably
+    const updated = copy.map((item, idx) => ({
+      ...item,
+      order: idx + 1,
+    }));
 
-    setProjects(copy);
+    setProjects(updated);
   };
 
   // Save to Firebase and local projects.json + categories.json
@@ -508,46 +509,61 @@ export const PortfolioShowcaseSection: React.FC = () => {
         lastSyncedAt: new Date().toISOString(),
       });
 
-      // 2. Save to local projects.json
-      await fetch('/api/save-portfolio-json', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(sorted, null, 2),
-      });
-
-      // 3. Save to local categories.json
-      await fetch('/api/save-portfolio-categories', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(categories, null, 2),
-      });
+      // 2. Attempt local filesystem sync in dev mode only
+      let localSaved = false;
+      if (import.meta.env.DEV) {
+        try {
+          const resProj = await fetch('/api/save-portfolio-json', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(sorted, null, 2),
+          });
+          const resCats = await fetch('/api/save-portfolio-categories', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(categories, null, 2),
+          });
+          localSaved = resProj.ok && resCats.ok;
+        } catch {
+          localSaved = false;
+        }
+      }
 
       setSyncStatus({
         ok: true,
-        msg: `تم حفظ وتحديث ${sorted.length} مشروعاً و ${categories.length} تصنيفات سحابياً ومحلياً بنجاح! 🚀`,
+        msg: localSaved
+          ? `تم حفظ وتحديث ${sorted.length} مشروعاً و ${categories.length} تصنيفات سحابياً ومحلياً بنجاح! 🚀`
+          : `تم نشر وتحديث ${sorted.length} مشروعاً و ${categories.length} تصنيفات سحابياً بنجاح! 🚀`,
       });
     } catch (err: any) {
       console.warn('Sync error:', err);
-      // Still attempt local save
+      // Still attempt local save if cloud failed
       try {
-        await fetch('/api/save-portfolio-json', {
+        const resProjLocal = await fetch('/api/save-portfolio-json', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(sorted, null, 2),
         });
-        await fetch('/api/save-portfolio-categories', {
+        const resCatsLocal = await fetch('/api/save-portfolio-categories', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(categories, null, 2),
         });
-        setSyncStatus({
-          ok: true,
-          msg: `تم حفظ البيانات محلياً بنجاح (${sorted.length} مشاريع، ${categories.length} تصنيفات)!`,
-        });
-      } catch {
+        if (resProjLocal.ok && resCatsLocal.ok) {
+          setSyncStatus({
+            ok: true,
+            msg: `تم حفظ البيانات محلياً بنجاح (${sorted.length} مشاريع، ${categories.length} تصنيفات). لم تكتمل المزامنة السحابية: ${err.message}`,
+          });
+        } else {
+          setSyncStatus({
+            ok: false,
+            msg: `فشلت المزامنة السحابية والمحلية: ${err.message}`,
+          });
+        }
+      } catch (localErr: any) {
         setSyncStatus({
           ok: false,
-          msg: 'حدث خطأ أثناء المزامنة: ' + err.message,
+          msg: 'حدث خطأ أثناء المزامنة: ' + (localErr?.message || err.message),
         });
       }
     } finally {
@@ -563,9 +579,6 @@ export const PortfolioShowcaseSection: React.FC = () => {
       <div className="bg-[#171821] border border-white/[0.08] rounded-2xl p-6 sm:p-7 shadow-xl">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div>
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md text-[10px] font-mono font-medium bg-zinc-900 border border-zinc-800 text-zinc-300 mb-2.5 tracking-wider">
-              <span>PORTFOLIO MANAGER · CMS</span>
-            </div>
             <h2 className="text-xl font-bold text-white tracking-tight">
               إدارة معرض أعمال البورتفوليو والتصنيفات
             </h2>
@@ -636,10 +649,10 @@ export const PortfolioShowcaseSection: React.FC = () => {
             return (
               <span
                 key={c.id}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-zinc-300 font-mono"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-zinc-300 font-medium"
               >
                 <span>{c.label}</span>
-                <span className="text-[10px] text-zinc-500 bg-zinc-950 px-1.5 py-0.2 rounded-md font-sans">
+                <span className="text-[10px] text-zinc-400 bg-zinc-950 px-1.5 py-0.5 rounded-md">
                   {count}
                 </span>
               </span>
@@ -708,29 +721,29 @@ export const PortfolioShowcaseSection: React.FC = () => {
                   )}
 
                   <div>
-                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                    <div className="flex flex-wrap items-center gap-2 mb-1.5">
                       <h4 className="text-sm font-bold text-white">{item.title}</h4>
-                      <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-[10px] text-zinc-300 font-mono">
+                      <span className="px-2 py-0.5 rounded-md bg-zinc-900 border border-zinc-800 text-[11px] text-zinc-300 font-medium">
                         {item.categoryLabel || item.category}
                       </span>
                       {imagesList.length > 1 ? (
-                        <span className="px-2 py-0.5 rounded bg-purple-950/60 border border-purple-800/60 text-[10px] text-purple-300 font-mono flex items-center gap-1">
+                        <span className="px-2 py-0.5 rounded-md bg-purple-950/60 border border-purple-800/60 text-[11px] text-purple-300 font-medium flex items-center gap-1">
                           <Images className="w-3 h-3 text-purple-400" />
                           <span>{imagesList.length} صور (سلايدر)</span>
                         </span>
                       ) : (
-                        <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-[10px] text-zinc-400 font-mono flex items-center gap-1">
+                        <span className="px-2 py-0.5 rounded-md bg-zinc-900 border border-zinc-800 text-[11px] text-zinc-400 font-medium flex items-center gap-1">
                           <ImageIcon className="w-3 h-3 text-zinc-400" />
                           <span>صورة واحدة</span>
                         </span>
                       )}
                       {item.showOnHome ? (
-                        <span className="px-2 py-0.5 rounded bg-blue-950/60 border border-blue-800/60 text-[10px] text-blue-300 font-mono flex items-center gap-1">
+                        <span className="px-2 py-0.5 rounded-md bg-blue-950/60 border border-blue-800/60 text-[11px] text-blue-300 font-medium flex items-center gap-1">
                           <Star className="w-3 h-3 text-blue-400 fill-current" />
                           <span>في الواجهة الرئيسية (الـ 4 الأوائل)</span>
                         </span>
                       ) : (
-                        <span className="px-2 py-0.5 rounded bg-zinc-900 text-[10px] text-zinc-500 font-mono">
+                        <span className="px-2 py-0.5 rounded-md bg-zinc-900 text-[11px] text-zinc-400 font-medium">
                           في صفحة "عرض الكل"
                         </span>
                       )}

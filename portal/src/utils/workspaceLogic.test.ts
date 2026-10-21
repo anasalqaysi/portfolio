@@ -5,6 +5,11 @@ import {
   calculateWorkspaceSummary,
   filterContacts,
   formatSocialLink,
+  normalizeWorkspaceData,
+  normalizePin,
+  findProjectByPin,
+  getStalePins,
+  generateSecurePin,
 } from './workspaceLogic';
 import type { IdeaItem, OutreachContact, DeveloperWorkspaceData } from '../types';
 
@@ -166,3 +171,44 @@ test('formatSocialLink creates valid direct URLs for WhatsApp, X, and TikTok', (
     'https://www.tiktok.com/@fahad.tiktok'
   );
 });
+
+test('normalizeWorkspaceData falls back gracefully on corrupt or partial input', () => {
+  const emptyNormalized = normalizeWorkspaceData(null);
+  assert.equal(typeof emptyNormalized.developerName, 'string');
+  assert.ok(Array.isArray(emptyNormalized.ideas));
+  assert.ok(Array.isArray(emptyNormalized.contacts));
+  assert.ok(Array.isArray(emptyNormalized.clientProjects));
+  assert.ok(Array.isArray(emptyNormalized.platforms));
+
+  const partial = normalizeWorkspaceData({ developerName: 'أنس مخصص', ideas: 'not-an-array' });
+  assert.equal(partial.developerName, 'أنس مخصص');
+  assert.deepEqual(partial.ideas, []);
+});
+
+test('normalizePin and findProjectByPin handle whitespace and case sensitivity', () => {
+  assert.equal(normalizePin('  CL-9XyZ123  '), 'cl-9xyz123');
+  assert.equal(normalizePin(null), '');
+
+  const projects = [
+    { id: 'p1', clientAccessPin: 'CL-ALPHA12', projectName: 'مشروع 1' } as any,
+    { id: 'p2', clientAccessPin: 'CL-BETA34', projectName: 'مشروع 2' } as any,
+  ];
+
+  assert.equal(findProjectByPin(projects, 'cl-alpha12')?.id, 'p1');
+  assert.equal(findProjectByPin(projects, '  CL-BETA34  ')?.id, 'p2');
+  assert.equal(findProjectByPin(projects, 'non-existent'), undefined);
+});
+
+test('getStalePins detects pins no longer present in current set', () => {
+  const previous = new Set(['cl-1', 'cl-2', 'cl-3']);
+  const current = new Set(['cl-2', 'cl-4']);
+  const stale = getStalePins(previous, current);
+  assert.deepEqual(stale.sort(), ['cl-1', 'cl-3']);
+});
+
+test('generateSecurePin produces valid non-colliding formatted PINs', () => {
+  const pin = generateSecurePin(['CL-EXISTS']);
+  assert.match(pin, /^CL-[23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{8}$/);
+  assert.notEqual(pin, 'CL-EXISTS');
+});
+

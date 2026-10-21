@@ -1,21 +1,6 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged,
-  sendPasswordResetEmail,
-  createUserWithEmailAndPassword,
-  type User,
-} from 'firebase/auth';
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  setDoc,
-  collection,
-  onSnapshot,
-} from 'firebase/firestore';
+import { getAuth, type User } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
 export const ADMIN_EMAIL = 'alqysyanas11@gmail.com';
 
