@@ -42,13 +42,21 @@ export const AuthView: React.FC<AuthViewProps> = ({
       await signInWithEmailAndPassword(auth, email.trim(), password);
       setSuccessMsg('تم التحقق بنجاح. مرحباً بك.');
     } catch (err: any) {
+      console.error('Firebase Auth Error:', err);
+      const code = err.code || '';
       let message = 'تعذر تسجيل الدخول. يرجى التحقق من البريد وكلمة المرور.';
-      if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
-        message = 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
-      } else if (err.code === 'auth/wrong-password') {
-        message = 'كلمة المرور غير مطابقة.';
-      } else if (err.code === 'auth/too-many-requests') {
+      if (code === 'auth/operation-not-allowed') {
+        message = 'خاصية تسجيل الدخول بكلمة المرور غير مفعّلة في Firebase! يرجى تفعيل Email/Password من تبويب Sign-in method.';
+      } else if (code === 'auth/user-not-found' || code === 'auth/invalid-credential') {
+        message = 'البريد الإلكتروني أو كلمة المرور غير صحيحة. تأكد من إضافة المستخدم في قائمة Users في Firebase Console.';
+      } else if (code === 'auth/wrong-password') {
+        message = 'كلمة المرور غير صحيحة.';
+      } else if (code === 'auth/too-many-requests') {
         message = 'تم إيقاف المحاولات مؤقتاً لكثرة المحاولات غير الناجحة. يرجى الانتظار دقيقة.';
+      } else if (code === 'auth/unauthorized-domain') {
+        message = 'النطاق الحالي غير مصرح به في إعدادات Firebase Auth.';
+      } else if (err.message) {
+        message = `تعذر الدخول (${code}): ${err.message}`;
       }
       setErrorMsg(message);
     } finally {
@@ -68,8 +76,18 @@ export const AuthView: React.FC<AuthViewProps> = ({
     try {
       await sendPasswordResetEmail(auth, email.trim());
       setSuccessMsg(`تم إرسال رابط إعادة تعيين كلمة المرور إلى ${email} بنجاح.`);
-    } catch {
-      setErrorMsg('تعذر إرسال رابط الاستعادة. تأكد من صحة البريد المدخل.');
+    } catch (err: any) {
+      console.error('Reset Password Error:', err);
+      const code = err.code || '';
+      let message = 'تعذر إرسال رابط الاستعادة.';
+      if (code === 'auth/operation-not-allowed') {
+        message = 'خاصية البريد الإلكتروني غير مفعّلة في Firebase. يرجى تفعيلها من تبويب Sign-in method.';
+      } else if (code === 'auth/user-not-found') {
+        message = 'هذا البريد غير مسجل في Firebase بعد. يرجى إضافته من تبويب Users.';
+      } else if (err.message) {
+        message = `${err.message} (${code})`;
+      }
+      setErrorMsg(message);
     } finally {
       setIsSubmitting(false);
     }
